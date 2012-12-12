@@ -118,7 +118,6 @@ public class Download extends Thread
         {
             n = bis.read(this.b, 0, size);
         }
-        ;
 
         if (Debug.DEBUG)
         {
@@ -203,7 +202,6 @@ public class Download extends Thread
             {
                 System.out.println("Downloaded new block of file xchange/shared/" + f.name);
             }
-
             // and update progress bar in GUI
             // your code here ...
 
