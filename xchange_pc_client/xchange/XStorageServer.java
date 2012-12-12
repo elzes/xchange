@@ -5,10 +5,14 @@ package xchange;
  * in other words : handles interaction with storage server
  */
 
-import java.io.*;
-import java.net.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.net.Socket;
 
-public class XStorageServer {
+public class XStorageServer
+{
     GUI g;
 
     public String ip = "";
@@ -17,55 +21,60 @@ public class XStorageServer {
     BufferedReader in;
     PrintWriter out;
 
-    XStorageServer (GUI g) {
-	this.g = g;
+    XStorageServer(GUI g)
+    {
+        this.g = g;
     }
 
     /**
-     * after router download is stopped, transfer 
-     * the downloaded blocks from the storage server (GET)
+     * after router download is stopped, transfer the downloaded blocks from the storage server (GET)
      */
 
-    public void TransferBlocks(String filename, int block_nr) {
-	
-	// your code here ...
+    public void TransferBlocks(String filename, int block_nr)
+    {
+
+        // your code here ...
     }
 
     /**
-     * remove all files stored on storage server (after all blocks are
-     * transferred to client (REMOVE)
+     * remove all files stored on storage server (after all blocks are transferred to client (REMOVE)
      */
 
-    public void removeFiles() {
-	String line = null;
-	try {
-	    // make connection to name server socket
-	    Socket ss = new Socket(g.ss.ip, port);
+    public void removeFiles()
+    {
+        String line = null;
+        try
+        {
+            // make connection to name server socket
+            Socket ss = new Socket(g.ss.ip, port);
 
-	    // get socket input stream and open a BufferedReader on it
-	    in = new BufferedReader(new InputStreamReader(ss.getInputStream()));
-	    // get socket output stream and open a PrintWriter on it
-	    out = new PrintWriter(ss.getOutputStream(), true);
+            // get socket input stream and open a BufferedReader on it
+            in = new BufferedReader(new InputStreamReader(ss.getInputStream()));
+            // get socket output stream and open a PrintWriter on it
+            out = new PrintWriter(ss.getOutputStream(), true);
 
-	    out.println("REMOVE");
+            out.println("REMOVE");
 
-	    // wait for response
-	    do {
-		line = in.readLine();
-	    } while (line == null);
-	    
-	    // close socket
-	    ss.close();
-	}
-	catch (IOException e) {
-	    e.printStackTrace();
-	}
+            // wait for response
+            do
+            {
+                line = in.readLine();
+            } while (line == null);
 
-	if (Debug.DEBUG) {
-	    System.out.println("Received after REMOVE request :" + line);
-	}
-	if (line.equals("FAIL")) {
-	    System.err.println("ERROR : Storageserver returned FAIL on ADD request");
-	}
+            // close socket
+            ss.close();
+        } catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+
+        if (Debug.DEBUG)
+        {
+            System.out.println("Received after REMOVE request :" + line);
+        }
+        if (line.equals("FAIL"))
+        {
+            System.err.println("ERROR : Storageserver returned FAIL on ADD request");
+        }
     }
 }
