@@ -105,10 +105,10 @@ public class SearchFrame extends JFrame implements ActionListener
         {
             clearTable();
             // do a LIST on the namerver
-            for (String ip : g.ns.getPeers())
+            for (String ip : g.nameServer.getPeers())
             {
                 // do a SEARCH on all peers
-                for (Fileinfo f : g.xc.searchFile(jpattern.getText(), ip))
+                for (Fileinfo f : g.xchange.searchFile(jpattern.getText(), ip))
                 {
                     if (Debug.DEBUG)
                     {

@@ -37,7 +37,7 @@ public class XNameServer
         try
         {
             // make connection to name server socket
-            Socket ns = new Socket(g.ns.ip, port);
+            Socket ns = new Socket(g.nameServer.ip, port);
 
             // get socket input stream and open a BufferedReader on it
             in = new BufferedReader(new InputStreamReader(ns.getInputStream()));
@@ -79,7 +79,7 @@ public class XNameServer
         try
         {
             // make connection to name server socket
-            Socket ns = new Socket(g.ns.ip, port);
+            Socket ns = new Socket(g.nameServer.ip, port);
 
             // get socket input stream and open a BufferedReader on it
             in = new BufferedReader(new InputStreamReader(ns.getInputStream()));
@@ -121,7 +121,7 @@ public class XNameServer
         try
         {
             // make connection to name server socket
-            Socket ns = new Socket(g.ns.ip, port);
+            Socket ns = new Socket(g.nameServer.ip, port);
 
             // get socket input stream and open a BufferedReader on it
             in = new BufferedReader(new InputStreamReader(ns.getInputStream()));

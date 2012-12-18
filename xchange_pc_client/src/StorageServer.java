@@ -1,9 +1,11 @@
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.io.RandomAccessFile;
 import java.net.ServerSocket;
 import java.net.Socket;
 
@@ -17,6 +19,7 @@ import xchange.Debug;
 public class StorageServer
 {
 
+    private static final String STORAGE_DIR = "./files/";
     private String ip = "";
     private final int port = 9002;
     private final int BLOCKSIZE = 64 * 1024;
@@ -36,7 +39,7 @@ public class StorageServer
             System.out.println("Storageserver started ...");
         }
         // check if ./files directory exists
-        File file = new File("./files");
+        File file = new File(STORAGE_DIR);
         if (!file.exists())
         {
             System.out.println("Please create directory ./files with r+w access.");
@@ -123,7 +126,55 @@ public class StorageServer
             System.out.println("Storageserver received : " + line);
         }
 
-        // your code here
+        String[] command = line.split(" ");
+        if (command.length < 5)
+        {
+            System.out.println("Invalid command");
+            return;
+        }
+
+        //merge filename if it contains <sp>
+        String fileName = "";
+        for (int i = 1; i <= command.length - 4; i++)
+        {
+            fileName += command[i];
+        }
+
+        int fileSize;
+        try
+        {
+            fileSize = Integer.parseInt(command[command.length - 4]);
+
+        } catch (NumberFormatException e)
+        {
+            System.out.println("Invalid filesize");
+            return;
+        }
+
+        int blockNr;
+        try
+        {
+            blockNr = Integer.parseInt(command[command.length - 3]);
+        } catch (NumberFormatException e)
+        {
+            System.out.println("Invalid blocknr");
+            return;
+        }
+
+        RandomAccessFile raf = getRandomAccesFile("filename");
+        /* if (!file.exists())
+         {
+             raf.write(new byte[fileSize]);
+         }
+        */
+        raf.seek(BLOCKSIZE * blockNr);
+
+        String[] blocks = command[command.length - 2].split(";");
+
+        for (int i = 0; i <= blocks.length; i++)
+        {
+            raf.write(blocks[i].getBytes());
+        }
 
         out.println("OK");
         if (Debug.DEBUG)
@@ -132,14 +183,18 @@ public class StorageServer
         }
     }
 
+    private RandomAccessFile getRandomAccesFile(String fileName) throws FileNotFoundException
+    {
+        File file = new File(STORAGE_DIR + fileName);
+        return new RandomAccessFile(file, "rw");
+    }
+
     private void handleGet(String line) throws Exception
     {
         if (Debug.DEBUG)
         {
             System.out.println("Storageserver received : " + line);
         }
-
-        // your code here
 
         if (Debug.DEBUG)
         {

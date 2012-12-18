@@ -44,6 +44,7 @@ import javax.swing.JProgressBar;
 public class GUI extends JFrame implements ActionListener
 {
 
+    private static final long serialVersionUID = -8754927216594188985L;
     // constants
     public static final int MAX_DOWNLOADS = 8;
     private final int W = 680; // frame width
@@ -60,10 +61,10 @@ public class GUI extends JFrame implements ActionListener
     public volatile boolean stop_all_downloads = false; // evaluated in Download.run
 
     // references
-    public Xchange xc;
-    public XNameServer ns;
-    public XStorageServer ss;
-    public Router rt;
+    public Xchange xchange;
+    public XNameServer nameServer;
+    public XStorageServer storageServer;
+    public Router router;
 
     // list of Fileinfo objects
     public ArrayList<Fileinfo> downloadList;
@@ -90,10 +91,10 @@ public class GUI extends JFrame implements ActionListener
     {
 
         // create objects and store references
-        xc = new Xchange();
-        ns = new XNameServer(this);
-        ss = new XStorageServer(this);
-        rt = new Router();
+        xchange = new Xchange();
+        nameServer = new XNameServer(this);
+        storageServer = new XStorageServer(this);
+        router = new Router();
 
         downloadList = new ArrayList<Fileinfo>();
         downloads = new ArrayList<Download>();
@@ -122,7 +123,7 @@ public class GUI extends JFrame implements ActionListener
             // register this client with the nameserver
             try
             {
-                ns.register(xc.ip);
+                nameServer.register(xchange.ip);
             } catch (Exception e)
             {
                 System.err.println("ERROR : Forgot to start the Nameserver ?");
@@ -292,7 +293,7 @@ public class GUI extends JFrame implements ActionListener
 
         if (e.getSource() == miList)
         {
-            new ListPeersFrame(this.ns);
+            new ListPeersFrame(this.nameServer);
         }
 
         if (e.getSource() == miStart)
@@ -383,19 +384,19 @@ public class GUI extends JFrame implements ActionListener
                 s = inStream.readLine().split("=");
                 if (s[0].equals("xc"))
                 {
-                    xc.ip = s[1];
+                    xchange.ip = s[1];
                 }
                 if (s[0].equals("ns"))
                 {
-                    ns.ip = s[1];
+                    nameServer.ip = s[1];
                 }
                 if (s[0].equals("ss"))
                 {
-                    ss.ip = s[1];
+                    storageServer.ip = s[1];
                 }
                 if (s[0].equals("rt"))
                 {
-                    rt.ip = s[1];
+                    router.ip = s[1];
                 }
             }
         }
@@ -421,10 +422,10 @@ public class GUI extends JFrame implements ActionListener
             System.out.println(hm);
         }
 
-        xc.ip = hm.get("xc");
-        ns.ip = hm.get("ns");
-        ss.ip = hm.get("ss");
-        rt.ip = hm.get("rt");
+        xchange.ip = hm.get("xc");
+        nameServer.ip = hm.get("ns");
+        storageServer.ip = hm.get("ss");
+        router.ip = hm.get("rt");
 
         try
         {
@@ -449,7 +450,7 @@ public class GUI extends JFrame implements ActionListener
         // unregister this cleint with nameserver
         try
         {
-            ns.unregister(xc.ip);
+            nameServer.unregister(xchange.ip);
         } catch (Exception e)
         {
             e.printStackTrace();
@@ -465,7 +466,7 @@ public class GUI extends JFrame implements ActionListener
             System.out.println("addToDownloadList : " + filename + " " + size + " " + ip);
         }
 
-        Fileinfo f = new Fileinfo(this.xc, filename, size, ip);
+        Fileinfo f = new Fileinfo(this.xchange, filename, size, ip);
 
         // avoid adding existing file
         for (Fileinfo tmp : downloadList)

@@ -46,7 +46,7 @@ public class XStorageServer
         try
         {
             // make connection to name server socket
-            Socket ss = new Socket(g.ss.ip, port);
+            Socket ss = new Socket(g.storageServer.ip, port);
 
             // get socket input stream and open a BufferedReader on it
             in = new BufferedReader(new InputStreamReader(ss.getInputStream()));

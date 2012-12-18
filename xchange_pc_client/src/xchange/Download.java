@@ -4,35 +4,40 @@ package xchange;
  * Download class represents the download thread
  * 
  */
+import helpers.FileHelper;
+
 import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.IOException;
 import java.io.PrintWriter;
-import java.io.RandomAccessFile;
 import java.net.Socket;
+import java.net.UnknownHostException;
 
 public class Download extends Thread
 {
 
-    private GUI g;
-    private Fileinfo f;
-    private byte[] b;
+    private static final String FILE_LOCATION = "xchange/shared/";
+    private static final String FILE_INFO_LOCATION = "xchange/INFO/";
+    private GUI gui;
+    private Fileinfo fileinfo;
+    private byte[] byteArray;
 
-    Download(GUI g, Fileinfo f)
+    Download(GUI gui, Fileinfo fileinfo)
     {
-        this.g = g;
-        this.f = f;
+        this.gui = gui;
+        this.fileinfo = fileinfo;
         // number of bytes read is, at most, equal to the length of b
         // allocate memory to buffer (yes, allocated on the heap)
-        this.b = new byte[g.xc.BLOCKSIZE];
+        this.byteArray = new byte[gui.xchange.BLOCKSIZE];
 
         if (Debug.DEBUG)
         {
-            System.out.println("New download of file " + f.name + " blocks= " + f.nr_of_blocks + " ip= " + f.ip);
+            System.out.println("New download of file " + fileinfo.name + " blocks= " + fileinfo.nr_of_blocks + " ip= " + fileinfo.ip);
         }
         try
         {
             preAllocateFiles();
-        } catch (Exception e)
+        } catch (IOException e)
         {
             e.printStackTrace();
         }
@@ -49,64 +54,53 @@ public class Download extends Thread
      * '0' = block not avaiable, '1' = block available
      *
      */
-    public void preAllocateFiles() throws Exception
+    public void preAllocateFiles() throws IOException
     {
-        File ftest = new File("xchange/shared/" + f.name + ".!xch");
-        if (ftest.exists())
+        File file = FileHelper.loadFile(FILE_LOCATION + fileinfo.name + FileHelper.TMP_EXT);
+        if (file.exists())
         {
-            System.err.println("NOTIFY : file " + f.name + " found pre-allocated");
+            System.err.println("NOTIFY : file " + fileinfo.name + " found pre-allocated");
             return;
         } else
         {
             // create a new file
-            RandomAccessFile file = new RandomAccessFile("xchange/shared/" + f.name + ".!xch", "rw");
-            // all bytes are set to zero by default
-            file.setLength(f.size);
-            file.close();
+            FileHelper.createRandomAccesFileFromFile(file, fileinfo.size);
+
             // create new info file
-            RandomAccessFile infoFile = new RandomAccessFile("xchange/INFO/" + f.name + ".!info", "rw");
-            // all bytes are set to zero by default
-            infoFile.setLength(f.nr_of_blocks);
-            // set all bytes to '0'
-            infoFile.seek(0);
-            for (int i = 0; i < f.nr_of_blocks; i++)
-            {
-                infoFile.writeByte((byte) '0');
-            }
-            infoFile.close();
+            FileHelper.createRandomAccesFileFromFile(new File(FILE_INFO_LOCATION + fileinfo.name + FileHelper.INFO_EXT),
+                    fileinfo.nr_of_blocks);
 
             if (Debug.DEBUG)
             {
-                System.out.println("Created new download file : shared/" + f.name + ".!xch");
-                System.out.println("Created new info file : xchange/INFO/" + f.name + ".!info");
+                System.out.println("Created new download file : " + FILE_LOCATION + fileinfo.name + FileHelper.TMP_EXT);
+                System.out.println("Created new info file : " + FILE_INFO_LOCATION + fileinfo.name + FileHelper.INFO_EXT);
             }
         }
     }
 
     /**
      * start downloading blocks into buffer this.b
+     * 
+     * @throws IOException
+     * @throws UnknownHostException
      */
 
     // get a remote block from another peer and return size of block
-    void getRemoteBlock(String fn, int block_nr, String ip, int size) throws Exception
+    void getRemoteBlock(String fileName, int block_nr, String ip, int size) throws UnknownHostException, IOException
     {
-        // buffere socket streams for better performance
-        BufferedInputStream bis;
-        PrintWriter out;
-
         String line = null;
         int block_size;
 
         // make connection to other peer
-        Socket ps = new Socket(ip, g.xc.port);
+        Socket ps = new Socket(ip, gui.xchange.port);
 
         // open a PrintWriter on socket, autoflush
-        out = new PrintWriter(ps.getOutputStream(), true);
+        PrintWriter printWriter = new PrintWriter(ps.getOutputStream(), true);
         // open a buffered reader on socket for raw data, give buffer size
-        bis = new BufferedInputStream(ps.getInputStream(), g.xc.BLOCKSIZE);
+        BufferedInputStream bufferedInputStream = new BufferedInputStream(ps.getInputStream(), gui.xchange.BLOCKSIZE);
 
         // example : "GET hello.mp3 312\n"
-        out.println("GET " + fn + " " + block_nr);
+        printWriter.println("GET " + fileName + " " + block_nr);
 
         /**
          * try to read size bytes note : n should be the number of bytes actually read, but testing shows that n always
@@ -116,16 +110,16 @@ public class Download extends Thread
         int n = -1;
         while (n < 1)
         {
-            n = bis.read(this.b, 0, size);
+            n = bufferedInputStream.read(this.byteArray, 0, size);
         }
 
         if (Debug.DEBUG)
         {
-            System.out.println("Received block with size " + size + " of remote file " + fn);
+            System.out.println("Received block with size " + size + " of remote file " + fileName);
             System.out.println("block contents :");
             for (int i = 0; i < size; i++)
             {
-                System.out.print(this.b[i]);
+                System.out.print(this.byteArray[i]);
             }
             System.out.println();
         }
@@ -133,27 +127,27 @@ public class Download extends Thread
 
     public void run()
     {
-        int size = g.xc.BLOCKSIZE;
+        int size = gui.xchange.BLOCKSIZE;
         int rest;
 
         // for all blocks
-        for (int i = 0; i < f.nr_of_blocks; i++)
+        for (int i = 0; i < fileinfo.nr_of_blocks; i++)
         {
-            if (i == (f.nr_of_blocks - 1))
+            if (i == (fileinfo.nr_of_blocks - 1))
             {
                 // calculate size of the last block
-                rest = (int) (f.size % g.xc.BLOCKSIZE);
+                rest = (int) (fileinfo.size % gui.xchange.BLOCKSIZE);
                 // if last block has BLOCKSIZE then rest = 0
                 if (rest > 0)
                 {
                     size = rest;
                 }
             }
-            if (g.stop_all_downloads)
+            if (gui.stop_all_downloads)
             {
                 if (Debug.DEBUG)
                 {
-                    System.out.println("Stop download of file " + f.name);
+                    System.out.println("Stop download of file " + fileinfo.name);
                 }
                 return;
             }
@@ -161,7 +155,7 @@ public class Download extends Thread
             try
             {
                 // using this.b as buffer !
-                getRemoteBlock(f.name, i, f.ip, size);
+                getRemoteBlock(fileinfo.name, i, fileinfo.ip, size);
             } catch (Exception e)
             {
                 e.printStackTrace();
@@ -171,36 +165,30 @@ public class Download extends Thread
 
             try
             {
-                File file = new File("xchange/shared/" + f.name + ".!xch");
+                File file = FileHelper.loadFile(FILE_LOCATION + fileinfo.name + FileHelper.TMP_EXT);
                 if (!file.exists())
                 {
-                    System.err.println("ERROR : file xchange/shared/" + f.name + ".!xch not found");
+                    System.err.println("ERROR : file " + FILE_LOCATION + fileinfo.name + FileHelper.TMP_EXT + " not found");
                     return;
                 }
-                RandomAccessFile raf = new RandomAccessFile(file, "rw");
-                raf.seek(i * g.xc.BLOCKSIZE);
-                // last block usually smaller than BLOCKSIZE
-                raf.write(this.b, 0, size);
-                raf.close();
+                FileHelper.writeByteArrayToFile(file, i * gui.xchange.BLOCKSIZE, this.byteArray, size);
 
                 // and update info file
-                File infoFile = new File("xchange/INFO/" + f.name + ".!info");
+                File infoFile = new File(FILE_INFO_LOCATION + fileinfo.name + ".!info");
                 if (!infoFile.exists())
                 {
-                    System.err.println("ERROR : file xchange/INFO/" + f.name + ".!info not found");
+                    System.err.println("ERROR : file " + FILE_INFO_LOCATION + fileinfo.name + ".!info not found");
                     return;
                 }
-                RandomAccessFile rafInfo = new RandomAccessFile(infoFile, "rw");
-                rafInfo.seek(i);
-                rafInfo.writeByte((byte) '1');
-                rafInfo.close();
+
+                FileHelper.writeByteToFile(infoFile, i, (byte) '1');
             } catch (Exception e)
             {
                 e.printStackTrace();
             }
             if (Debug.DEBUG)
             {
-                System.out.println("Downloaded new block of file xchange/shared/" + f.name);
+                System.out.println("Downloaded new block of file " + FILE_LOCATION + fileinfo.name);
             }
             // and update progress bar in GUI
             // your code here ...
@@ -208,19 +196,11 @@ public class Download extends Thread
         } // for all blocks
 
         // when downloading is finished, remove the !xch extension
+        FileHelper.renameTmpFile(FILE_LOCATION + fileinfo.name + FileHelper.TMP_EXT);
 
-        try
-        {
-            File oldfile = new File("xchange/shared/" + f.name + ".!xch");
-            File newfile = new File("xchange/shared/" + f.name);
-            oldfile.renameTo(newfile);
-        } catch (Exception e)
-        {
-            e.printStackTrace();
-        }
         if (Debug.DEBUG)
         {
-            System.out.println("Removed extension from file : xchange/shared/" + f.name + ".!xch");
+            System.out.println("Removed extension from file : " + FILE_LOCATION + fileinfo.name + ".!xch");
         }
     }
 }

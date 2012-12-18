@@ -45,7 +45,7 @@ public class SettingsFrame extends JFrame implements ActionListener
 
         jtf_xc = new JTextField();
         jtf_xc.setBounds(160, 10, 100, 20);
-        jtf_xc.setText(g.xc.ip);
+        jtf_xc.setText(g.xchange.ip);
         add(jtf_xc);
 
         // nameserver
@@ -55,7 +55,7 @@ public class SettingsFrame extends JFrame implements ActionListener
 
         jtf_ns = new JTextField();
         jtf_ns.setBounds(160, 35, 100, 20);
-        jtf_ns.setText(g.ns.ip);
+        jtf_ns.setText(g.nameServer.ip);
         add(jtf_ns);
 
         // storage server
@@ -65,7 +65,7 @@ public class SettingsFrame extends JFrame implements ActionListener
 
         jtf_ss = new JTextField();
         jtf_ss.setBounds(160, 60, 100, 20);
-        jtf_ss.setText(g.ss.ip);
+        jtf_ss.setText(g.storageServer.ip);
         add(jtf_ss);
 
         // router
@@ -75,7 +75,7 @@ public class SettingsFrame extends JFrame implements ActionListener
 
         jtf_rt = new JTextField();
         jtf_rt.setBounds(160, 85, 100, 20);
-        jtf_rt.setText(g.rt.ip);
+        jtf_rt.setText(g.router.ip);
         add(jtf_rt);
 
         jbtOK = new JButton("OK");
@@ -131,7 +131,7 @@ public class SettingsFrame extends JFrame implements ActionListener
                     // register this client with the nameserver
                     try
                     {
-                        g.ns.register(g.xc.ip);
+                        g.nameServer.register(g.xchange.ip);
                     } catch (Exception ioe)
                     {
                         ioe.printStackTrace();
