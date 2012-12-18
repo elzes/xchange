@@ -11,6 +11,8 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 
+import xchange.gui.GUI;
+
 public class XNameServer
 {
     GUI g;

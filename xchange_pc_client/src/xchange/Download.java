@@ -13,6 +13,8 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
+import xchange.gui.GUI;
+
 public class Download extends Thread
 {
 
@@ -22,13 +24,13 @@ public class Download extends Thread
     private Fileinfo fileinfo;
     private byte[] byteArray;
 
-    Download(GUI gui, Fileinfo fileinfo)
+    public Download(GUI gui, Fileinfo fileinfo)
     {
         this.gui = gui;
         this.fileinfo = fileinfo;
         // number of bytes read is, at most, equal to the length of b
         // allocate memory to buffer (yes, allocated on the heap)
-        this.byteArray = new byte[gui.xchange.BLOCKSIZE];
+        this.byteArray = new byte[Xchange.BLOCKSIZE];
 
         if (Debug.DEBUG)
         {

@@ -5,11 +5,14 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 
+import xchange.Xchange;
+
 public class FileHelper
 {
 
     public static final String TMP_EXT = ".!xch";
     public static final String INFO_EXT = ".!info";
+    public static final int BLOCK_SIZE = Xchange.BLOCKSIZE;
 
     public static File createTmpFile(String location) throws IOException
     {
@@ -68,6 +71,11 @@ public class FileHelper
         raf.seek(offset);
         raf.write(byteToWrite);
         raf.close();
+    }
+
+    public static void writeBlockToFile(File file, int blockNr, int blockSize, byte[] data) throws IOException
+    {
+        writeByteArrayToFile(file, blockNr * blockSize, data, data.length);
     }
 
     public static byte[] getBlockFromFile(File file, int blockNr, int blockSize) throws IOException

@@ -1,4 +1,4 @@
-package xchange;
+package xchange.gui;
 
 /*
  * Creates frame/window for executing a file search
@@ -19,6 +19,9 @@ import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
+
+import xchange.Debug;
+import xchange.Fileinfo;
 
 public class SearchFrame extends JFrame implements ActionListener
 {

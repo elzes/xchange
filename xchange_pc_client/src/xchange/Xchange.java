@@ -20,7 +20,7 @@ public class Xchange
     public String ip = "";
     public final int port = 9000;
 
-    public final int BLOCKSIZE = 64 * 1024;
+    public final static int BLOCKSIZE = 64 * 1024;
 
     public Xchange()
     {

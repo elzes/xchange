@@ -1,4 +1,4 @@
-package xchange;
+package xchange.gui;
 
 /*
  * Creates frame/window to show a list of peers registered
@@ -11,6 +11,8 @@ import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JList;
+
+import xchange.XNameServer;
 
 public class ListPeersFrame extends JFrame
 {

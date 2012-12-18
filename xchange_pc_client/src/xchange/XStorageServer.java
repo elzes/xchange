@@ -5,25 +5,43 @@ package xchange;
  * in other words : handles interaction with storage server
  */
 
+import helpers.FileHelper;
+
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.net.UnknownHostException;
+
+import xchange.gui.GUI;
 
 public class XStorageServer
 {
-    GUI g;
+    GUI gui;
 
     public String ip = "";
     public final int port = 9002;
 
-    BufferedReader in;
-    PrintWriter out;
+    BufferedReader bufferedReader;
+    PrintWriter printWriter;
 
-    XStorageServer(GUI g)
+    private Socket socket;
+
+    public XStorageServer(GUI gui)
     {
-        this.g = g;
+        this.gui = gui;
+    }
+
+    private void setupSocket() throws UnknownHostException, IOException
+    {
+        socket = new Socket(gui.storageServer.ip, port);
+        // get socket input stream and open a BufferedReader on it
+        bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+        // get socket output stream and open a PrintWriter on it
+        printWriter = new PrintWriter(socket.getOutputStream(), true);
+
     }
 
     /**
@@ -32,8 +50,36 @@ public class XStorageServer
 
     public void TransferBlocks(String filename, int block_nr)
     {
+        try
+        {
+            setupSocket();
+            printWriter.println("GET " + filename + " " + block_nr);
 
-        // your code here ...
+            String line;
+            // wait for response
+            do
+            {
+                line = bufferedReader.readLine();
+            } while (line == null);
+
+            if (line.startsWith("OK"))
+            {
+                byte[] bytes = line.substring(3).getBytes();
+                FileHelper.writeBlockToFile(new File(filename), block_nr, FileHelper.BLOCK_SIZE, bytes);
+            } else
+            {
+                System.err.println("ERROR : Storageserver returned FAIL on GET request");
+            }
+
+            // close socket
+            socket.close();
+        } catch (UnknownHostException e)
+        {
+            e.printStackTrace();
+        } catch (IOException e)
+        {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -45,24 +91,17 @@ public class XStorageServer
         String line = null;
         try
         {
-            // make connection to name server socket
-            Socket ss = new Socket(g.storageServer.ip, port);
-
-            // get socket input stream and open a BufferedReader on it
-            in = new BufferedReader(new InputStreamReader(ss.getInputStream()));
-            // get socket output stream and open a PrintWriter on it
-            out = new PrintWriter(ss.getOutputStream(), true);
-
-            out.println("REMOVE " + fileName);
+            setupSocket();
+            printWriter.println("REMOVE " + fileName);
 
             // wait for response
             do
             {
-                line = in.readLine();
+                line = bufferedReader.readLine();
             } while (line == null);
 
             // close socket
-            ss.close();
+            socket.close();
         } catch (IOException e)
         {
             e.printStackTrace();

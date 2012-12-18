@@ -1,4 +1,4 @@
-package xchange;
+package xchange.gui;
 
 /**
  * NOTE : this application was developed on linux, for Windows all "/" in directory names should be changed in "\"
@@ -40,6 +40,15 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JProgressBar;
+
+import xchange.Debug;
+import xchange.Download;
+import xchange.Fileinfo;
+import xchange.Router;
+import xchange.State;
+import xchange.XNameServer;
+import xchange.XStorageServer;
+import xchange.Xchange;
 
 public class GUI extends JFrame implements ActionListener
 {

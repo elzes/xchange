@@ -1,4 +1,4 @@
-package xchange;
+package xchange.gui;
 
 /*
  * Creates frame/window for defining IP adresses of
@@ -15,9 +15,13 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
+import xchange.Debug;
+import xchange.State;
+
 public class SettingsFrame extends JFrame implements ActionListener
 {
 
+    private static final long serialVersionUID = -3803909890156520601L;
     private final int W = 350; // frame width
     private final int H = 190; // frame height
 
