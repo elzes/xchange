@@ -69,4 +69,25 @@ public class FileHelper
         raf.write(byteToWrite);
         raf.close();
     }
+
+    public static byte[] getBlockFromFile(File file, int blockNr, int blockSize) throws IOException
+    {
+        byte[] byteArray = new byte[blockSize];
+        int offset = blockNr * blockSize;
+
+        RandomAccessFile raf = getRandomAccesFileFromFile(file);
+        if (raf.length() < offset + blockSize)
+            throw new IOException("File is smaller than search");
+
+        raf.seek(blockNr * blockSize);
+        raf.read(byteArray);
+
+        return byteArray;
+    }
+
+    public static boolean removeFile(String location)
+    {
+        File file = new File(location);
+        return file.delete();
+    }
 }

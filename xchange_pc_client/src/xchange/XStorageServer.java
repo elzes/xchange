@@ -40,7 +40,7 @@ public class XStorageServer
      * remove all files stored on storage server (after all blocks are transferred to client (REMOVE)
      */
 
-    public void removeFiles()
+    public void removeFile(String fileName)
     {
         String line = null;
         try
@@ -53,7 +53,7 @@ public class XStorageServer
             // get socket output stream and open a PrintWriter on it
             out = new PrintWriter(ss.getOutputStream(), true);
 
-            out.println("REMOVE");
+            out.println("REMOVE " + fileName);
 
             // wait for response
             do

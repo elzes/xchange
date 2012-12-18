@@ -1,11 +1,14 @@
+package StorageServer;
+
+import helpers.FileHelper;
+
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintWriter;
-import java.io.RandomAccessFile;
 import java.net.ServerSocket;
 import java.net.Socket;
 
@@ -20,7 +23,6 @@ public class StorageServer
 {
 
     private static final String STORAGE_DIR = "./files/";
-    private String ip = "";
     private final int port = 9002;
     private final int BLOCKSIZE = 64 * 1024;
 
@@ -119,81 +121,65 @@ public class StorageServer
         }
     }
 
-    private void handlePost(String line) throws Exception
+    private void handlePost(String line)
     {
         if (Debug.DEBUG)
         {
             System.out.println("Storageserver received : " + line);
         }
 
-        String[] command = line.split(" ");
-        if (command.length < 5)
-        {
-            System.out.println("Invalid command");
-            return;
-        }
-
-        //merge filename if it contains <sp>
-        String fileName = "";
-        for (int i = 1; i <= command.length - 4; i++)
-        {
-            fileName += command[i];
-        }
-
-        int fileSize;
         try
         {
-            fileSize = Integer.parseInt(command[command.length - 4]);
+            StorageServerPostCommand command = new StorageServerPostCommand(line);
 
-        } catch (NumberFormatException e)
+            File file = FileHelper.loadFile(STORAGE_DIR + command.getFileName());
+
+            if (!file.exists())
+            {
+                FileHelper.createRandomAccesFileFromFile(file, command.getFileSize());
+            }
+
+            FileHelper.writeByteArrayToFile(file, BLOCKSIZE * command.getBlockNr(), command.getBytesToWrite(),
+                    command.getBytesToWrite().length);
+
+            out.println("OK");
+        } catch (IOException e)
         {
-            System.out.println("Invalid filesize");
-            return;
+            handleError();
+            e.printStackTrace();
+        } catch (InvalidCommandException e)
+        {
+            handleError();
+            e.printStackTrace();
         }
-
-        int blockNr;
-        try
-        {
-            blockNr = Integer.parseInt(command[command.length - 3]);
-        } catch (NumberFormatException e)
-        {
-            System.out.println("Invalid blocknr");
-            return;
-        }
-
-        RandomAccessFile raf = getRandomAccesFile("filename");
-        /* if (!file.exists())
-         {
-             raf.write(new byte[fileSize]);
-         }
-        */
-        raf.seek(BLOCKSIZE * blockNr);
-
-        String[] blocks = command[command.length - 2].split(";");
-
-        for (int i = 0; i <= blocks.length; i++)
-        {
-            raf.write(blocks[i].getBytes());
-        }
-
-        out.println("OK");
         if (Debug.DEBUG)
         {
             System.out.println("Storageserver : added block to file");
         }
     }
 
-    private RandomAccessFile getRandomAccesFile(String fileName) throws FileNotFoundException
-    {
-        File file = new File(STORAGE_DIR + fileName);
-        return new RandomAccessFile(file, "rw");
-    }
-
-    private void handleGet(String line) throws Exception
+    private void handleGet(String line)
     {
         if (Debug.DEBUG)
         {
             System.out.println("Storageserver received : " + line);
+        }
+
+        byte[] byteArray;
+        try
+        {
+            StorageServerGetCommand storageServerGetCommand = new StorageServerGetCommand(line);
+            byteArray = FileHelper.getBlockFromFile(new File(storageServerGetCommand.getFileName()),
+                    storageServerGetCommand.getBlockNr(), BLOCKSIZE);
+            out.println("OK" + new String(byteArray));
+        } catch (IOException e)
+        {
+            handleError();
+            e.printStackTrace();
+        } catch (InvalidCommandException e)
+        {
+            handleError();
+            e.printStackTrace();
         }
 
         if (Debug.DEBUG)
@@ -202,23 +188,36 @@ public class StorageServer
         }
     }
 
-    private void handleRemove(String line) throws Exception
+    private void handleRemove(String line)
     {
         if (Debug.DEBUG)
         {
             System.out.println("Storageserver received : " + line);
         }
 
-        // this is a stub ! your code here
+        try
+        {
+            StorageServerRemoveCommand storageServerRemoveCommand = new StorageServerRemoveCommand(line);
+            if (FileHelper.removeFile(STORAGE_DIR + storageServerRemoveCommand.getFileName()))
+            {
+                out.println("OK");
+            } else
+            {
+                handleError();
+            }
+        } catch (InvalidCommandException e)
+        {
+            handleError();
+            e.printStackTrace();
+        }
 
-        out.println("OK");
         if (Debug.DEBUG)
         {
             System.out.println("Storageserver : all files removed !");
         }
     }
 
-    private void handleError() throws Exception
+    private void handleError()
     {
         out.println("FAIL");
     }
