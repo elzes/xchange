@@ -192,6 +192,7 @@ public class Download extends Thread
             }
             // and update progress bar in GUI
             // your code here ...
+            gui.updateProgress(fileinfo.name);
 
         } // for all blocks
 
