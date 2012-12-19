@@ -8,15 +8,19 @@
 <?import javafx.scene.paint.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane id="Content" minHeight="0.0" minWidth="0.0"
-	prefHeight="180.0" prefWidth="200.0" xmlns:fx="http://javafx.com/fxml"
-	fx:controller="nl.groep5.xchange.controllers.PeersController">
+<Tab text="Peers" xmlns:fx="http://javafx.com/fxml"
+	fx:controller="nl.groep5.xchange.controllers.PeersController"
+	onSelectionChanged="#handleTabChange">
+	<content>
+		<AnchorPane id="Content" minHeight="0.0" minWidth="0.0"
+			prefHeight="180.0" prefWidth="200.0">
 
-	<children>
-		<ListView prefHeight="345.0" prefWidth="640.0"
-			AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
-			AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-	</children>
-
-</AnchorPane>
+			<children>
+				<ListView prefHeight="345.0" prefWidth="640.0"
+					AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
+					AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" id="peersListView" />
+			</children>
+		</AnchorPane>
+	</content>
+</Tab>
 
