@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.paint.*?>
+<?import javafx.scene.text.*?>
+
+<MenuBar VBox.vgrow="NEVER" xmlns:fx="http://javafx.com/fxml"
+	fx:controller="nl.groep5.xchange.controllers.MenuController">
+			<menus>
+				<Menu mnemonicParsing="false" text="File">
+					<items>
+						<MenuItem mnemonicParsing="false" text="Settings" />
+						<MenuItem mnemonicParsing="false" text="Share file" />
+						<MenuItem mnemonicParsing="false" text="Exit" />
+					</items>
+				</Menu>
+				<Menu mnemonicParsing="false" text="Downloads">
+					<items>
+						<MenuItem mnemonicParsing="false" text="Start download" />
+						<MenuItem mnemonicParsing="false" text="Stop download" />
+						<MenuItem mnemonicParsing="false"
+							text="Start router download(take over)" />
+						<MenuItem mnemonicParsing="false" text="Stop router download" />
+					</items>
+				</Menu>
+			</menus>
+		</MenuBar>
+

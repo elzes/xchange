@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.paint.*?>
+<?import javafx.scene.text.*?>
+
+<VBox prefHeight="400.0" prefWidth="640.0" xmlns:fx="http://javafx.com/fxml"
+	fx:controller="nl.groep5.xchange.controllers.MainController">
+	<children>
+		<fx:include source="menu.fxml" />
+		<TabPane prefHeight="376.0" prefWidth="640.0"
+			tabClosingPolicy="UNAVAILABLE">
+			<tabs>
+				<Tab text="Downloads">
+					<content>
+						<fx:include source="download.fxml" />
+					</content>
+				</Tab>
+				<Tab text="Search">
+					<content>
+						<fx:include source="search.fxml" />
+					</content>
+				</Tab>
+				<Tab text="Peers">
+					<content>
+						<fx:include source="peers.fxml" />
+					</content>
+				</Tab>
+			</tabs>
+		</TabPane>
+	</children>
+</VBox>
