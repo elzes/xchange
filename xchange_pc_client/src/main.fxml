@@ -8,7 +8,7 @@
 <?import javafx.scene.paint.*?>
 <?import javafx.scene.text.*?>
 
-<VBox prefHeight="400.0" prefWidth="640.0" xmlns:fx="http://javafx.com/fxml" fx:controller="MainController">
+<VBox prefHeight="400.0" prefWidth="640.0" xmlns:fx="http://javafx.com/fxml" fx:controller="nl.groep5.xchange.control.MainController">
   <children>
     <MenuBar VBox.vgrow="NEVER">
       <menus>
@@ -90,11 +90,11 @@
             </GridPane>
           </content>
         </Tab>
-        <Tab text="Search">
+        <Tab text="Search" >
           <content>
             <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
               <children>
-                <TextField prefHeight="24.0" prefWidth="640.0" promptText="Search \magnifier" />
+                <TextField onKeyPressed="#handleSearchField" prefHeight="24.0" prefWidth="640.0" promptText="Search" />
                 <TableView prefHeight="321.0" prefWidth="640.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="24.0">
                   <columns>
                     <TableColumn maxWidth="370.0" minWidth="350.0" prefWidth="350.0" text="Filename" />
