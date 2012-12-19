@@ -1,4 +1,4 @@
-package xchange;
+package nl.groep5.xchange;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
