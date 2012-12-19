@@ -7,6 +7,5 @@
 			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="C:/Program Files/Java/jdk1.7.0_09/jre/lib/jfxrt.jar"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="C:/Program Files/Java/jdk1.7.0_09/jre/lib/jfxrt.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
