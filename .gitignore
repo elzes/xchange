@@ -4,3 +4,6 @@
 *.jar
 *.war
 *.ear
+*.classpath
+/xchange_pc_client/bin
+/xchange_pc_client/.settings/*.prefs
