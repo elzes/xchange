@@ -25,11 +25,9 @@
 						<fx:include source="search.fxml" />
 					</content>
 				</Tab>
-				<Tab text="Peers">
-					<content>
-						<fx:include source="peers.fxml" />
-					</content>
-				</Tab>
+
+				<fx:include source="peers.fxml" />
+
 			</tabs>
 		</TabPane>
 	</children>
