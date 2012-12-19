@@ -1,25 +1,21 @@
 package nl.groep5.xchange.controllers;
 
-import javafx.event.Event;
+import java.net.URL;
+import java.util.ResourceBundle;
+
 import javafx.fxml.FXML;
-import javafx.scene.control.Control;
+import javafx.fxml.Initializable;
 import javafx.scene.control.ListView;
-import javafx.scene.control.Tab;
 import nl.groep5.xchange.Communicator;
+import nl.groep5.xchange.models.Peer;
 
-public class PeersController extends Control
-{
+public class PeersController implements Initializable {
 
-    @FXML
-    protected void handleTabChange(Event event)
-    {
-        Tab tab = (Tab) event.getSource();
-        if (tab.isSelected())
-        {
-            Communicator.updatePeers();
-        }
+	@FXML
+	ListView<Peer> peersListView;
 
-        @SuppressWarnings("unchecked")
-        ListView<Object> peers = (ListView<Object>) lookup("#peersListView");
-    }
+	@Override
+	public void initialize(URL arg0, ResourceBundle arg1) {
+		peersListView.setItems(Communicator.getPeers());
+	}
 }

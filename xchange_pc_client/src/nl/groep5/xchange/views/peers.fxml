@@ -9,8 +9,7 @@
 <?import javafx.scene.text.*?>
 
 <Tab text="Peers" xmlns:fx="http://javafx.com/fxml"
-	fx:controller="nl.groep5.xchange.controllers.PeersController"
-	onSelectionChanged="#handleTabChange">
+	fx:controller="nl.groep5.xchange.controllers.PeersController">
 	<content>
 		<AnchorPane id="Content" minHeight="0.0" minWidth="0.0"
 			prefHeight="180.0" prefWidth="200.0">
@@ -18,7 +17,7 @@
 			<children>
 				<ListView prefHeight="345.0" prefWidth="640.0"
 					AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
-					AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" id="peersListView" />
+					AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" fx:id="peersListView" />
 			</children>
 		</AnchorPane>
 	</content>
