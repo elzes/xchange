@@ -13,18 +13,17 @@
 			<menus>
 				<Menu mnemonicParsing="false" text="File">
 					<items>
-						<MenuItem mnemonicParsing="false" text="Settings" />
-						<MenuItem mnemonicParsing="false" text="Share file" />
-						<MenuItem mnemonicParsing="false" text="Exit" />
+						<MenuItem mnemonicParsing="false" text="Settings" onAction="#SettingsClick" fx:id="settings" />
+						<MenuItem mnemonicParsing="false" text="Share file" onAction="#ShareFileClick" fx:id="shareFile" />
+						<MenuItem mnemonicParsing="false" text="Exit" onAction="#ExitClick" fx:id="exit" />
 					</items>
 				</Menu>
 				<Menu mnemonicParsing="false" text="Downloads">
 					<items>
-						<MenuItem mnemonicParsing="false" text="Start download" />
-						<MenuItem mnemonicParsing="false" text="Stop download" />
-						<MenuItem mnemonicParsing="false"
-							text="Start router download(take over)" />
-						<MenuItem mnemonicParsing="false" text="Stop router download" />
+						<MenuItem mnemonicParsing="false" text="Start download" onAction="#StartPCDownloadClick" fx:id="startPC" />
+						<MenuItem mnemonicParsing="false" text="Stop download" onAction="#StopPCDownloadClick" fx:id="stopPC" disable="true" />
+						<MenuItem mnemonicParsing="false" text="Start router download(take over)"  onAction="#StartRouterDownloadClick" fx:id="startRouter"/>
+						<MenuItem mnemonicParsing="false" text="Stop router download"  onAction="#StopRouterDownloadClick" fx:id="stopRouter" disable="true"/>
 					</items>
 				</Menu>
 			</menus>
