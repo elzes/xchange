@@ -40,6 +40,7 @@ public class NameServer {
 			if (line.startsWith("FAIL"))
 				throw new IOException();
 
+			System.out.println("Done with command " + command);
 			return line;
 		} catch (ConnectException e) {
 			e.printStackTrace();

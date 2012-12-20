@@ -46,7 +46,8 @@ public class NameServerClientHandler extends Thread {
 		} while (line == null);
 
 		if (line.startsWith("ADD")) {
-			nameServer.handleAdd(line, out);
+			nameServer.handleAdd(line + " "
+					+ s.getInetAddress().getHostAddress(), out);
 		}
 
 		else if (line.startsWith("REMOVE")) {
