@@ -9,22 +9,25 @@
 <?import javafx.scene.text.*?>
 
 <AnchorPane id="Content" minHeight="0.0" minWidth="0.0"
-	prefHeight="180.0" prefWidth="200.0" xmlns:fx="http://javafx.com/fxml" fx:controller="nl.groep5.xchange.controllers.SearchController">
+	prefHeight="180.0" prefWidth="640.0" xmlns:fx="http://javafx.com/fxml"
+	fx:controller="nl.groep5.xchange.controllers.SearchController">
 	<children>
 		<TextField onKeyPressed="#handleSearchField" prefHeight="24.0"
-			prefWidth="640.0" promptText="Search" text="*"/>
-		<TableView prefHeight="321.0" prefWidth="640.0"
+			prefWidth="640.0" promptText="Search" text="*" />
+		<TableView fx:id="searchResults" prefHeight="321.0"
+			prefWidth="640.0" tableMenuButtonVisible="false"
 			AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
 			AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="24.0">
 			<columns>
 				<TableColumn maxWidth="370.0" minWidth="350.0"
-					prefWidth="350.0" text="Filename" />
+					prefWidth="350.0" text="Filename" fx:id="fileName" />
 				<TableColumn maxWidth="140.0" minWidth="100.0"
-					prefWidth="120.0" text="Size in bytes" />
+					prefWidth="120.0" text="Size in bytes" fx:id="fileSize" />
 				<TableColumn maxWidth="190.0" minWidth="150.0"
-					prefWidth="168.0" text="IP address" />
+					prefWidth="168.0" text="IP address" fx:id="ip" />
 			</columns>
 		</TableView>
+		<Button layoutX="100.0" layoutY="90.0" mnemonicParsing="false"
+			onMouseClicked="#downloadFile" text="Download" />
 	</children>
 </AnchorPane>
-
