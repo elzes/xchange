@@ -13,7 +13,6 @@ import java.util.ArrayList;
 public class NameServer {
 
 	private static final boolean DEBUG = true;
-	private String ip = "";
 	public static final int port = 9001;
 	private ArrayList<String> list;
 

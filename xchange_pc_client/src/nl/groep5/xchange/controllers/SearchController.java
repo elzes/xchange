@@ -1,4 +1,4 @@
-package nl.groep5.xchange.client.controllers;
+package nl.groep5.xchange.controllers;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -14,8 +14,8 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Text;
-import nl.groep5.xchange.client.Communicator;
-import nl.groep5.xchange.client.models.DownloadableFile;
+import nl.groep5.xchange.Communicator;
+import nl.groep5.xchange.models.DownloadableFile;
 
 public class SearchController extends Control implements Initializable {
 

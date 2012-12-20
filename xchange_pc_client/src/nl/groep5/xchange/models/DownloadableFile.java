@@ -1,4 +1,4 @@
-package nl.groep5.xchange.client.models;
+package nl.groep5.xchange.models;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 
 import javafx.scene.control.ProgressBar;
-import nl.groep5.xchange.client.Settings;
+import nl.groep5.xchange.Settings;
 
 public class DownloadableFile {
 

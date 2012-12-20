@@ -1,4 +1,4 @@
-package nl.groep5.xchange.client.controllers;
+package nl.groep5.xchange.controllers;
 
 import java.io.IOException;
 import java.net.URL;
@@ -15,8 +15,8 @@ import javafx.scene.layout.VBoxBuilder;
 import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import nl.groep5.xchange.client.Main;
-import nl.groep5.xchange.client.Settings;
+import nl.groep5.xchange.Main;
+import nl.groep5.xchange.Settings;
 
 public class SettingsController extends AnchorPane implements Initializable {
 

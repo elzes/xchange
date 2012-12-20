@@ -1,4 +1,4 @@
-package nl.groep5.xchange.client;
+package nl.groep5.xchange;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -18,9 +18,9 @@ import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-import nl.groep5.xchange.client.controllers.MainController;
-import nl.groep5.xchange.client.controllers.SettingsController;
-import nl.groep5.xchange.client.externalInput.OtherPeerListener;
+import nl.groep5.xchange.controllers.MainController;
+import nl.groep5.xchange.controllers.SettingsController;
+import nl.groep5.xchange.externalInput.OtherPeerListener;
 
 /**
  * Main Application. This class handles navigation and user session.
