@@ -82,7 +82,9 @@ public class IncomingConnectionHandler extends Thread {
 			RandomAccessFile randomAccessFile = new RandomAccessFile(file, "r");
 			randomAccessFile.seek(Settings.getBlockSize() * blockNr);
 			byte[] content = new byte[Settings.getBlockSize()];
-			randomAccessFile.read(content);
+			randomAccessFile.read(content, 0, Settings.getBlockSize());
+			randomAccessFile.close();
+
 			bufferedOutputStream.write(content);
 			bufferedOutputStream.flush();
 		} catch (FileNotFoundException e) {
@@ -108,8 +110,7 @@ public class IncomingConnectionHandler extends Thread {
 				});
 
 		for (File file : foundFiles) {
-			printWriter
-					.print(file.getName() + " " + file.getTotalSpace() + " ");
+			printWriter.print(file.getName() + " " + file.length() + " ");
 		}
 
 		printWriter.println();

@@ -23,8 +23,8 @@ public class DownloadableFile {
 		return fileName;
 	}
 
-	public float getFileSize() {
-		return Float.parseFloat(fileSize);
+	public long getFileSize() {
+		return Long.parseLong(fileSize);
 	}
 
 	public String getIp() {
@@ -40,7 +40,12 @@ public class DownloadableFile {
 		File file = new File(Settings.getSharedFolder()
 				+ getFileNameWithoutExtension() + Settings.getTmpExtension());
 
-		checkFileExistanceAndCreate(file);
+		if (!file.exists() /* && getCompleteFile() == null TODO activate */) {
+			file.createNewFile();
+			RandomAccessFile randomAccessFile = new RandomAccessFile(file, "rw");
+			randomAccessFile.setLength(getFileSize());
+			randomAccessFile.close();
+		}
 
 		if (file.exists())
 			return file;
@@ -49,12 +54,21 @@ public class DownloadableFile {
 	}
 
 	public File getDownloadStatusFile() throws IOException {
-		String fileName = Settings.getInfoFolder()
-				+ getFileName().replace(Settings.getTmpExtension(),
-						Settings.getInfoExtension());
+		String fileName = Settings.getInfoFolder() + getFileName()
+				+ Settings.getInfoExtension();
 		System.out.println("getDownloadStatusFile " + fileName);
+
 		File file = new File(fileName);
-		checkFileExistanceAndCreate(file);
+		if (!file.exists() /* && getCompleteFile() == null TODO activate */) {
+			file.createNewFile();
+			RandomAccessFile randomAccessFile = new RandomAccessFile(file, "rw");
+			System.out.println("fileSize:" + getFileSize() + "no of blocks "
+					+ getNoOfBlocks());
+			for (int i = 1; i <= getNoOfBlocks(); i++) {
+				randomAccessFile.write((byte) '0');
+			}
+			randomAccessFile.close();
+		}
 
 		if (file.exists())
 			return file;
@@ -62,16 +76,12 @@ public class DownloadableFile {
 		return null;
 	}
 
-	private void checkFileExistanceAndCreate(File file) throws IOException,
-			FileNotFoundException {
-
-		if (!file.exists() && getCompleteFile() == null) {
-			file.createNewFile();
-			RandomAccessFile randomAccessFile = new RandomAccessFile(file, "rw");
-			for (int i = 0; i <= getFileSize(); i++) {
-				randomAccessFile.write((byte) '0');
-			}
+	public int getNoOfBlocks() {
+		int noOfBlocks = (int) getFileSize() / Settings.getBlockSize();
+		if (getFileSize() % Settings.getBlockSize() != 0) {
+			noOfBlocks++;
 		}
+		return noOfBlocks;
 	}
 
 	public File getCompleteFile() {
@@ -92,5 +102,9 @@ public class DownloadableFile {
 
 	public Peer getPeer() {
 		return peer;
+	}
+
+	public int getRestSize() {
+		return (int) (getFileSize() % Settings.getBlockSize());
 	}
 }

@@ -19,26 +19,49 @@ public class Downloader extends Thread {
 
 	@Override
 	public void run() {
-
+		System.out.println("Downloader.run()");
 		try {
 			progressFile = new RandomAccessFile(
 					downloadableFile.getDownloadStatusFile(), "rw");
 			targetFile = new RandomAccessFile(
 					downloadableFile.getDownloadTargetFile(), "rw");
 
+			System.out.println("complete: " + downloadIsComplete());
 			if (downloadIsComplete()) {
 				completeDownload();
 				return;
 			}
 
+			int blockSize;
 			while (!downloadIsComplete()) {
+				progressFile = new RandomAccessFile(
+						downloadableFile.getDownloadStatusFile(), "rw");
+				targetFile = new RandomAccessFile(
+						downloadableFile.getDownloadTargetFile(), "rw");
+
+				System.out.println("download not complete "
+						+ downloadableFile.getRealFileName());
+				System.out.println("download block" + curBlock + "//"
+						+ downloadableFile.getNoOfBlocks());
+
+				if (curBlock < downloadableFile.getNoOfBlocks() - 1) {
+					blockSize = Settings.getBlockSize();
+				} else {
+					blockSize = downloadableFile.getRestSize();
+				}
+				System.out.println("blockSize " + blockSize);
 				byte[] result = Communicator.GetBlockFromPeer(downloadableFile,
-						curBlock, Settings.getBlockSize());
+						curBlock, blockSize);
+
+				System.out.println("--" + new String(result) + "--");
+
 				targetFile.seek(Settings.getBlockSize() * curBlock);
 				targetFile.write(result);
+				targetFile.close();
 
 				progressFile.seek(curBlock);
 				progressFile.write((byte) '1');
+				progressFile.close();
 			}
 
 			completeDownload();
@@ -48,18 +71,37 @@ public class Downloader extends Thread {
 	}
 
 	private boolean downloadIsComplete() throws IOException {
+
+		progressFile = new RandomAccessFile(
+				downloadableFile.getDownloadStatusFile(), "rw");
 		byte[] byteArray = new byte[(int) progressFile.length()];
+		progressFile.seek(0);
 		progressFile.readFully(byteArray);
 		String content = new String(byteArray);
 		curBlock = content.indexOf('0');
-		return curBlock != -1;
+		return curBlock == -1;
 	}
 
 	private void completeDownload() throws IOException {
+		progressFile.close();
+		targetFile.close();
+
+		System.out.println("complete download of "
+				+ downloadableFile.getRealFileName());
+
 		downloadableFile.getDownloadStatusFile().delete();
+
 		File newFileName = new File(Settings.getSharedFolder()
 				+ downloadableFile.getFileName().replace(
 						Settings.getTmpExtension(), ""));
+
+		// delete if new file already exists
+		if (newFileName.exists()) {
+			System.out
+					.println("Going to delete downloaded file because target already exsists");
+			downloadableFile.getDownloadTargetFile().delete();
+		}
+
 		downloadableFile.getDownloadTargetFile().renameTo(newFileName);
 	}
 }

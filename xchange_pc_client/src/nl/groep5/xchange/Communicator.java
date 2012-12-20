@@ -129,7 +129,7 @@ public class Communicator {
 		printWriter.println("GET " + downloadableFile.getRealFileName() + " "
 				+ curBlock);
 
-		byte[] byteArray = new byte[Settings.getBlockSize()];
+		byte[] byteArray = new byte[size];
 
 		int n = -1;
 		while (n < 1) {
