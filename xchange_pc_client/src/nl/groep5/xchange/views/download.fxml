@@ -8,101 +8,22 @@
 <?import javafx.scene.paint.*?>
 <?import javafx.scene.text.*?>
 
-<GridPane alignment="TOP_CENTER" xmlns:fx="http://javafx.com/fxml"
+<AnchorPane id="Content" minHeight="0.0" minWidth="0.0"
+	prefHeight="180.0" prefWidth="640.0" xmlns:fx="http://javafx.com/fxml"
 	fx:controller="nl.groep5.xchange.controllers.DownloadController">
 	<children>
-		<Label alignment="CENTER" contentDisplay="CENTER" text="Size in bytes"
-			textAlignment="CENTER" GridPane.columnIndex="1" GridPane.halignment="CENTER"
-			GridPane.rowIndex="0">
-			<font>
-				<Font name="System Bold" size="14.0" fx:id="x1" />
-			</font>
-		</Label>
-		<Label alignment="CENTER" contentDisplay="CENTER" font="$x1"
-			text="Progress" textAlignment="CENTER" GridPane.columnIndex="2"
-			GridPane.halignment="CENTER" GridPane.rowIndex="0" />
-		<Label alignment="CENTER" contentDisplay="CENTER" font="$x1"
-			text="Filename" textAlignment="CENTER" GridPane.columnIndex="0"
-			GridPane.halignment="CENTER" GridPane.rowIndex="0" />
-		<ProgressBar prefWidth="200.0" progress="0.0"
-			GridPane.columnIndex="2" GridPane.rowIndex="1" />
-		<ProgressBar prefWidth="200.0" progress="0.0"
-			GridPane.columnIndex="2" GridPane.rowIndex="2" />
-		<ProgressBar prefWidth="200.0" progress="0.0"
-			GridPane.columnIndex="2" GridPane.rowIndex="3" />
-		<ProgressBar prefWidth="200.0" progress="0.0"
-			GridPane.columnIndex="2" GridPane.rowIndex="4" />
-		<ProgressBar prefWidth="200.0" progress="0.0"
-			GridPane.columnIndex="2" GridPane.rowIndex="5" />
-		<ProgressBar prefWidth="200.0" progress="0.0"
-			GridPane.columnIndex="2" GridPane.rowIndex="6" />
-		<ProgressBar prefWidth="200.0" progress="0.0"
-			GridPane.columnIndex="2" GridPane.rowIndex="7" />
-		<ProgressBar prefWidth="200.0" progress="0.0"
-			GridPane.columnIndex="2" GridPane.rowIndex="8" />
-		<Label text="?" GridPane.columnIndex="1" GridPane.halignment="CENTER"
-			GridPane.rowIndex="1" />
-		<Label text="?" GridPane.columnIndex="1" GridPane.halignment="CENTER"
-			GridPane.rowIndex="2" />
-		<Label text="?" GridPane.columnIndex="1" GridPane.halignment="CENTER"
-			GridPane.rowIndex="3" />
-		<Label text="?" GridPane.columnIndex="1" GridPane.halignment="CENTER"
-			GridPane.rowIndex="4" />
-		<Label text="?" GridPane.columnIndex="1" GridPane.halignment="CENTER"
-			GridPane.rowIndex="5" />
-		<Label text="?" GridPane.columnIndex="1" GridPane.halignment="CENTER"
-			GridPane.rowIndex="6" />
-		<Label text="?" GridPane.columnIndex="1" GridPane.halignment="CENTER"
-			GridPane.rowIndex="7" />
-		<Label text="?" GridPane.columnIndex="1" GridPane.halignment="CENTER"
-			GridPane.rowIndex="8" />
-		<Label text="Unassigned (00)" GridPane.columnIndex="0"
-			GridPane.rowIndex="1">
-			<GridPane.margin>
-				<Insets left="10.0" fx:id="x2" />
-			</GridPane.margin>
-		</Label>
-		<Label text="Unassigned (01)" GridPane.columnIndex="0"
-			GridPane.margin="$x2" GridPane.rowIndex="2" />
-		<Label text="Unassigned (02)" GridPane.columnIndex="0"
-			GridPane.margin="$x2" GridPane.rowIndex="3" />
-		<Label text="Unassigned (03)" GridPane.columnIndex="0"
-			GridPane.margin="$x2" GridPane.rowIndex="4" />
-		<Label text="Unassigned (04)" GridPane.columnIndex="0"
-			GridPane.margin="$x2" GridPane.rowIndex="5" />
-		<Label text="Unassigned (05)" GridPane.columnIndex="0"
-			GridPane.margin="$x2" GridPane.rowIndex="6" />
-		<Label text="Unassigned (06)" GridPane.columnIndex="0"
-			GridPane.margin="$x2" GridPane.rowIndex="7" />
-		<Label text="Unassigned (07)" GridPane.columnIndex="0"
-			GridPane.margin="$x2" GridPane.rowIndex="8" />
+		<TableView fx:id="downloads" prefHeight="321.0"
+			prefWidth="640.0" tableMenuButtonVisible="false"
+			AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
+			AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="24.0">
+			<columns>
+				<TableColumn maxWidth="370.0" minWidth="350.0"
+					prefWidth="350.0" text="Filename" fx:id="fileName" />
+				<TableColumn maxWidth="140.0" minWidth="100.0"
+					prefWidth="120.0" text="Size in bytes" fx:id="fileSize" />
+				<TableColumn maxWidth="190.0" minWidth="150.0"
+	prefWidth="168.0" text="Progress" fx:id="progress" />
+			</columns>
+		</TableView>
 	</children>
-	<columnConstraints>
-		<ColumnConstraints hgrow="SOMETIMES" maxWidth="324.0"
-			minWidth="10.0" prefWidth="324.0" />
-		<ColumnConstraints hgrow="SOMETIMES" maxWidth="228.0"
-			minWidth="10.0" prefWidth="115.0" />
-		<ColumnConstraints hgrow="SOMETIMES" maxWidth="212.0"
-			minWidth="10.0" prefWidth="201.0" />
-	</columnConstraints>
-	<rowConstraints>
-		<RowConstraints minHeight="10.0" prefHeight="30.0"
-			vgrow="SOMETIMES" />
-		<RowConstraints minHeight="10.0" prefHeight="30.0"
-			vgrow="SOMETIMES" />
-		<RowConstraints minHeight="10.0" prefHeight="30.0"
-			vgrow="SOMETIMES" />
-		<RowConstraints minHeight="10.0" prefHeight="30.0"
-			vgrow="SOMETIMES" />
-		<RowConstraints minHeight="10.0" prefHeight="30.0"
-			vgrow="SOMETIMES" />
-		<RowConstraints minHeight="10.0" prefHeight="30.0"
-			vgrow="SOMETIMES" />
-		<RowConstraints minHeight="10.0" prefHeight="30.0"
-			vgrow="SOMETIMES" />
-		<RowConstraints minHeight="10.0" prefHeight="30.0"
-			vgrow="SOMETIMES" />
-		<RowConstraints minHeight="10.0" prefHeight="30.0"
-			vgrow="SOMETIMES" />
-	</rowConstraints>
-</GridPane>
+</AnchorPane>

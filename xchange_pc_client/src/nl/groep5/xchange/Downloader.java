@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 
+import nl.groep5.xchange.controllers.DownloadController;
 import nl.groep5.xchange.models.DownloadableFile;
 
 public class Downloader extends Thread {
@@ -34,8 +35,6 @@ public class Downloader extends Thread {
 
 			int blockSize;
 			while (!downloadIsComplete()) {
-				System.out.println("download not complete "
-						+ downloadableFile.getRealFileName());
 				System.out.println("download block" + curBlock + "//"
 						+ downloadableFile.getNoOfBlocks());
 
@@ -44,17 +43,16 @@ public class Downloader extends Thread {
 				} else {
 					blockSize = downloadableFile.getRestSize();
 				}
-				System.out.println("blockSize " + blockSize);
+
 				byte[] result = Communicator.GetBlockFromPeer(downloadableFile,
 						curBlock, blockSize);
-
-				System.out.println("--" + new String(result) + "--");
 
 				targetFile.seek(Settings.getBlockSize() * curBlock);
 				targetFile.write(result);
 
 				progressFile.seek(curBlock);
 				progressFile.write((byte) '1');
+				DownloadController.progressUpdated(downloadableFile);
 			}
 
 			completeDownload();
@@ -96,5 +94,7 @@ public class Downloader extends Thread {
 		}
 
 		downloadableFile.getDownloadTargetFile().renameTo(newFileName);
+
+		DownloadController.removeDownload(downloadableFile);
 	}
 }
