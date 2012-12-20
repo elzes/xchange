@@ -58,14 +58,12 @@ public class DownloadableFile {
 	public File getDownloadStatusFile() throws IOException {
 		String fileName = Settings.getInfoFolder() + getFileName()
 				+ Settings.getInfoExtension();
-		System.out.println("getDownloadStatusFile " + fileName);
 
 		File file = new File(fileName);
 		if (!file.exists() /* && getCompleteFile() == null TODO activate */) {
 			file.createNewFile();
 			RandomAccessFile randomAccessFile = new RandomAccessFile(file, "rw");
-			System.out.println("fileSize:" + getFileSize() + "no of blocks "
-					+ getNoOfBlocks());
+
 			for (int i = 1; i <= getNoOfBlocks(); i++) {
 				randomAccessFile.write((byte) '0');
 			}
@@ -120,30 +118,36 @@ public class DownloadableFile {
 		return progressBar;
 	}
 
-	public int getProgress() {
+	public double getProgress() {
 		File statusFile;
 		try {
 			statusFile = getDownloadStatusFile();
 			if (statusFile == null)
-				return 100;
+				return 1;
 
 			RandomAccessFile progressFile = new RandomAccessFile(statusFile,
 					"r");
 			byte[] byteArray = new byte[(int) progressFile.length()];
 			progressFile.seek(0);
 			progressFile.readFully(byteArray);
+			progressFile.close();
 
 			String content = new String(byteArray);
-			int curBlock = content.indexOf('0');
-			if (curBlock == -1)
-				return 100;
 
-			System.out.println("total " + (curBlock / getNoOfBlocks() * 100));
-			return curBlock / getNoOfBlocks() * 100;
+			double curBlock = content.indexOf('0');// double for division later
+
+			if (curBlock == -1)
+				return 1;
+
+			return curBlock / getNoOfBlocks();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 
-		return 1337;
+		return 0;
+	}
+
+	public void updateProgressBar() {
+		getProgressBar();
 	}
 }

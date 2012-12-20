@@ -5,7 +5,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.net.ConnectException;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
@@ -21,12 +20,22 @@ public class Communicator {
 	private static ObservableList<DownloadableFile> searchResults = FXCollections
 			.observableArrayList();
 
-	private static NameServer nameServer = new NameServer(
-			Settings.getNameServerIp(), Settings.getNameServerPort());
+	private static NameServer nameServer = new NameServer(Settings
+			.getInstance().getNameServerIp(), Settings.getNameServerPort());
 
-	public static void signUpToNameServer() throws ConnectException,
-			IOException {
-		nameServer.sendCommand("ADD");
+	public static void resetConnections() {
+		nameServer = new NameServer(Settings.getInstance().getNameServerIp(),
+				Settings.getNameServerPort());
+	}
+
+	public static boolean signUpToNameServer() {
+		try {
+			String response = nameServer.sendCommand("ADD");
+			return response.equals("OK");
+		} catch (IOException e) {
+			System.out.println("could not connect to nameserver.");
+		}
+		return false;
 	}
 
 	public static void updatePeers() {
@@ -36,10 +45,8 @@ public class Communicator {
 			for (String s : result.split(" ")) {
 				peers.add(new Peer(s));
 			}
-		} catch (UnknownHostException e) {
-			e.printStackTrace();
 		} catch (IOException e) {
-			e.printStackTrace();
+			System.out.println("Failed to update peerlist.");
 		}
 	}
 
@@ -137,5 +144,13 @@ public class Communicator {
 		}
 
 		return byteArray;
+	}
+
+	public static boolean testRouter() {
+		return true;
+	}
+
+	public static boolean testFileServer() {
+		return true;
 	}
 }

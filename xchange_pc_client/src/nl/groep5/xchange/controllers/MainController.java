@@ -7,14 +7,15 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-import javax.swing.JFileChooser;
-
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.MenuItem;
 import javafx.scene.layout.AnchorPane;
+
+import javax.swing.JFileChooser;
+
 import nl.groep5.xchange.Main;
 import nl.groep5.xchange.State;
 
@@ -51,7 +52,7 @@ public class MainController extends AnchorPane implements Initializable {
 
 	@FXML
 	protected void SettingsClick(ActionEvent event) {
-		application.setupSettings();
+		application.showSettings();
 		System.out.println("Settings clicked!");
 	}
 

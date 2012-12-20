@@ -1,13 +1,8 @@
 package nl.groep5.xchange;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.ConnectException;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -33,7 +28,6 @@ import nl.groep5.xchange.externalInput.OtherPeerListener;
 public class Main extends Application {
 
 	private static final int PEER_UPDATE_TIME = 30;// time in seconds
-	private static boolean running;
 	private Timeline peerUpdater;
 	private OtherPeerListener otherPeerListener;
 
@@ -54,7 +48,6 @@ public class Main extends Application {
 
 	@Override
 	public void start(Stage primaryStage) {
-		running = true;
 		try {
 			stage = primaryStage;
 			stage.setTitle("XChange application");
@@ -62,19 +55,21 @@ public class Main extends Application {
 			stage.setMinHeight(MINIMUM_WINDOW_HEIGHT);
 			stage.setMaxWidth(MAXIMUM_WINDOW_WIDTH);
 			stage.setMaxHeight(MAXIMUM_WINDOW_HEIGHT);
-			loadSettings();
-			if(loadSettings())
+
+			try {
+				Settings.getInstance().load();
+			} catch (IOException e) {
+				System.out.println("Could not load the settings");
+			}
+			if (Settings.getInstance().validate()) {
 				gotoMain();
-			else if(!(Settings.getNameServerIp().equals("")) &&
-					!(Settings.getStorageServerIp().equals("")) &&
-					!(Settings.getRouterIp().equals("")))
-				gotoMain();
-			else
+			} else {
 				gotoSettings();
+			}
 			primaryStage.show();
 			initSytem();
 		} catch (Exception ex) {
-			Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+			ex.printStackTrace();
 		}
 	}
 
@@ -100,29 +95,11 @@ public class Main extends Application {
 																		// update:)
 	}
 
-	public void setupSettings() {
+	public void showSettings() {
 		gotoSettings();
 	}
 
-	public void saveSettings(HashMap<String, String> hm) {
-		try {
-			FileWriter of = new FileWriter("xchange/settings.txt");
-			// using Interface Map.Entry
-			for (Map.Entry<String, String> e : hm.entrySet()) {
-				of.write(e.getKey() + "=" + e.getValue() + "\n");
-			}
-			of.close();
-		}
-		// if the named file does not exist, cannot be created, cannot be opened
-		// ...
-		catch (IOException e) {
-			System.err.println("Error writing to xchange/settings.txt");
-			e.printStackTrace();
-		}
-		gotoMain();
-	}
-
-	public void cancelSettings() {
+	public void closeSettings() {
 		gotoMain();
 	}
 
@@ -161,42 +138,9 @@ public class Main extends Application {
 		return (Initializable) loader.getController();
 	}
 
-	public boolean loadSettings() {
-		int i;
-		String[] s = null;
-		try {
-			BufferedReader inStream = new BufferedReader(new FileReader(
-					"xchange/settings.txt"));
-			for (i = 0; i < 3; i++) {
-				// read a line and split it
-				s = inStream.readLine().split("=");
-				if (s[0].equals("ns")) {
-					Settings.setNameServerIp(s[1]);
-				}
-				if (s[0].equals("ss")) {
-					Settings.setStorageServerIp(s[1]);
-				}
-				if (s[0].equals("rt")) {
-					Settings.setRouterIp(s[1]);
-				}
-			}
-			inStream.close();
-		}
-
-		catch (IOException e) {
-			System.err.println("WARNING : xchange/settings.txt not found.");
-			return false;
-		}
-		return true;
-	}
-
 	@Override
 	public void stop() throws Exception {
 		otherPeerListener.stopListening();
 		super.stop();
-	}
-
-	public static boolean isRunning() {
-		return running;
 	}
 }

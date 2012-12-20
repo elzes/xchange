@@ -35,8 +35,6 @@ public class Downloader extends Thread {
 
 			int blockSize;
 			while (!downloadIsComplete()) {
-				System.out.println("download block" + curBlock + "//"
-						+ downloadableFile.getNoOfBlocks());
 
 				if (curBlock < downloadableFile.getNoOfBlocks() - 1) {
 					blockSize = Settings.getBlockSize();
@@ -52,7 +50,7 @@ public class Downloader extends Thread {
 
 				progressFile.seek(curBlock);
 				progressFile.write((byte) '1');
-				DownloadController.progressUpdated(downloadableFile);
+				downloadableFile.updateProgressBar();
 			}
 
 			completeDownload();

@@ -5,11 +5,13 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.ConnectException;
+import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
 public class NameServer {
 
+	private static final int SOCKET_TIMEOUT = 5;
 	private String ip;
 	private int port;
 
@@ -22,7 +24,9 @@ public class NameServer {
 			IOException, ConnectException {
 
 		try {
-			Socket socket = new Socket(ip, port);
+			Socket socket = new Socket();
+			socket.connect(new InetSocketAddress(ip, port),
+					SOCKET_TIMEOUT * 1000);
 			BufferedReader bufferedReader = new BufferedReader(
 					new InputStreamReader(socket.getInputStream()));
 
@@ -43,7 +47,6 @@ public class NameServer {
 			System.out.println("Done with command " + command);
 			return line;
 		} catch (ConnectException e) {
-			e.printStackTrace();
 			throw new UnknownHostException();
 		}
 

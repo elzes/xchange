@@ -2,6 +2,7 @@ package nl.groep5.xchange.externalInput;
 
 import java.io.IOException;
 import java.net.ServerSocket;
+import java.net.SocketException;
 
 import nl.groep5.xchange.Settings;
 
@@ -24,9 +25,16 @@ public class OtherPeerListener extends Thread {
 
 		// listen for incoming connections
 		while (!isStopped) {
-			IncomingConnectionHandler incomingConnectionHandler = new IncomingConnectionHandler(
-					serverSocket.accept());
-			incomingConnectionHandler.start();
+			try {
+				IncomingConnectionHandler incomingConnectionHandler = new IncomingConnectionHandler(
+						serverSocket.accept());
+				incomingConnectionHandler.start();
+			} catch (SocketException e) {
+				// error on application closed.
+				System.out
+						.println("SocketExceiont OtherPeerLister probably program closed");
+			}
+
 		}
 	}
 

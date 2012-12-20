@@ -1,10 +1,10 @@
 package nl.groep5.xchange.controllers;
 
-import nl.groep5.xchange.State;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Control;
 import javafx.scene.control.MenuItem;
+import nl.groep5.xchange.State;
 
 public class MenuController extends Control {
 
