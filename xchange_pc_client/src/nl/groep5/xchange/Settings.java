@@ -10,8 +10,20 @@ public class Settings {
 	private static String infoExtension = ".!info";
 	private static String infoFolder = "xchange/INFO/";
 
+	private static String routerIP;
+	private static String storageServerIP;
+	private static String nameServerIP;
+
 	public static String getNameServerIp() {
-		return "145.37.57.59";
+		return nameServerIP;
+	}
+
+	public static String getStorageServerIp() {
+		return storageServerIP;
+	}
+
+	public static String getRouterIp() {
+		return routerIP;
 	}
 
 	public static int getNameServerPort() {
@@ -48,5 +60,17 @@ public class Settings {
 
 	public static String getInfoExtension() {
 		return infoExtension;
+	}
+	
+	public static void setNameServerIp(String newNameServerIP) {
+		nameServerIP = newNameServerIP;
+	}
+
+	public static void setStorageServerIp(String newStorageServerIP) {
+		storageServerIP = newStorageServerIP;
+	}
+
+	public static void setRouterIp(String newRouterIP) {
+		routerIP = newRouterIP;
 	}
 }
