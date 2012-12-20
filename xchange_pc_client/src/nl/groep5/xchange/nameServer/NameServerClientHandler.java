@@ -1,4 +1,4 @@
-package old.nameServer;
+package nl.groep5.xchange.nameServer;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;

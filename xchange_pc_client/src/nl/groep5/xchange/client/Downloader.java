@@ -1,11 +1,11 @@
-package nl.groep5.xchange;
+package nl.groep5.xchange.client;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 
-import nl.groep5.xchange.controllers.DownloadController;
-import nl.groep5.xchange.models.DownloadableFile;
+import nl.groep5.xchange.client.controllers.DownloadController;
+import nl.groep5.xchange.client.models.DownloadableFile;
 
 public class Downloader extends Thread {
 

@@ -1,4 +1,4 @@
-package old.nameServer;
+package nl.groep5.xchange.nameServer;
 
 /**
  * This class implements a separate application (server process)

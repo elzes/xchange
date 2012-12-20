@@ -1,10 +1,10 @@
-package nl.groep5.xchange.externalInput;
+package nl.groep5.xchange.client.externalInput;
 
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.SocketException;
 
-import nl.groep5.xchange.Settings;
+import nl.groep5.xchange.client.Settings;
 
 public class OtherPeerListener extends Thread {
 

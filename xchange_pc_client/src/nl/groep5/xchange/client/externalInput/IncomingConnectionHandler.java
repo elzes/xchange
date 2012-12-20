@@ -1,4 +1,4 @@
-package nl.groep5.xchange.externalInput;
+package nl.groep5.xchange.client.externalInput;
 
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
@@ -11,7 +11,7 @@ import java.io.PrintWriter;
 import java.io.RandomAccessFile;
 import java.net.Socket;
 
-import nl.groep5.xchange.Settings;
+import nl.groep5.xchange.client.Settings;
 
 public class IncomingConnectionHandler extends Thread {
 

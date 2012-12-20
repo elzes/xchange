@@ -1,4 +1,4 @@
-package nl.groep5.xchange.controllers;
+package nl.groep5.xchange.client.controllers;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -15,9 +15,9 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.text.Text;
-import nl.groep5.xchange.Communicator;
-import nl.groep5.xchange.Settings;
-import nl.groep5.xchange.models.DownloadableFile;
+import nl.groep5.xchange.client.Communicator;
+import nl.groep5.xchange.client.Settings;
+import nl.groep5.xchange.client.models.DownloadableFile;
 
 public class DownloadController extends Control implements Initializable {
 

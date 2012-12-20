@@ -1,28 +1,13 @@
-package nl.groep5.xchange.controllers;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.net.URL;
-import java.util.ResourceBundle;
+package nl.groep5.xchange.client.controllers;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
+import javafx.scene.control.Control;
 import javafx.scene.control.MenuItem;
-import javafx.scene.layout.AnchorPane;
+import nl.groep5.xchange.client.State;
 
-import javax.swing.JFileChooser;
+public class MenuController extends Control {
 
-import nl.groep5.xchange.Main;
-import nl.groep5.xchange.State;
-
-public class MainController extends AnchorPane implements Initializable {
-
-	@FXML
-	Button buttonSettings;
 	@FXML
 	MenuItem settings;
 	@FXML
@@ -38,65 +23,16 @@ public class MainController extends AnchorPane implements Initializable {
 	@FXML
 	MenuItem stopRouter;
 
-	private Main application;
-
-	public void setApp(Main application) {
-		this.application = application;
-	}
-
-	@Override
-	public void initialize(URL location, ResourceBundle resources) {
-		// TODO Auto-generated method stub
-
-	}
+	State state;
 
 	@FXML
 	protected void SettingsClick(ActionEvent event) {
-		application.showSettings();
 		System.out.println("Settings clicked!");
 	}
 
 	@FXML
 	protected void ShareFileClick(ActionEvent event) {
-		try {
-			JFileChooser jfc = new JFileChooser(".");
-			jfc.setDialogTitle("Add a file to be shared");
-			jfc.setApproveButtonText("Share");
-
-			if (jfc.showOpenDialog(jfc) == JFileChooser.APPROVE_OPTION) {
-				File fSelected = jfc.getSelectedFile();
-				if (fSelected == null) {
-					return;
-				} else {
-					File fi = fSelected;
-					File fo = new File("xchange/shared/" + fSelected.getName());
-
-					try {
-						FileInputStream fis = new FileInputStream(fi);
-						FileOutputStream fos = new FileOutputStream(fo);
-
-						// Define the size of our buffer for buffering file data
-						byte[] buffer = new byte[4096];
-						// each time read and write up to buffer.length bytes
-						// read counts nr of bytes available
-						int read;
-						while ((read = fis.read(buffer)) != -1) {
-							fos.write(buffer, 0, read);
-						}
-						// Finally close the input and output stream after we've
-						// finished with them.
-						fis.close();
-						fos.close();
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-				}
-			}
-		}
-
-		catch (Exception e) {
-			e.printStackTrace();
-		}
+		System.out.println("Share file clicked!");
 	}
 
 	@FXML
@@ -106,30 +42,30 @@ public class MainController extends AnchorPane implements Initializable {
 
 	@FXML
 	protected void StartPCDownloadClick(ActionEvent event) {
-		application.state = State.LOCAL_START;
+		state = State.LOCAL_START;
 		updateGUI();
 	}
 
 	@FXML
 	protected void StopPCDownloadClick(ActionEvent event) {
-		application.state = State.LOCAL_STOP;
+		state = State.LOCAL_STOP;
 		updateGUI();
 	}
 
 	@FXML
 	protected void StartRouterDownloadClick(ActionEvent event) {
-		application.state = State.ROUTER_START;
+		state = State.ROUTER_START;
 		updateGUI();
 	}
 
 	@FXML
 	protected void StopRouterDownloadClick(ActionEvent event) {
-		application.state = State.ROUTER_STOP;
+		state = State.ROUTER_STOP;
 		updateGUI();
 	}
 
 	public void updateGUI() {
-		switch (application.state) {
+		switch (state) {
 		case NO_SETTINGS:
 			settings.setDisable(false);
 			shareFile.setDisable(true);
@@ -180,4 +116,5 @@ public class MainController extends AnchorPane implements Initializable {
 			break;
 		}
 	}
+
 }

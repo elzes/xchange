@@ -1,4 +1,4 @@
-package nl.groep5.xchange;
+package nl.groep5.xchange.client;
 
 // gui state; depending on state menu items are enabled/disabled
 

@@ -1,6 +1,6 @@
-package nl.groep5.xchange.models;
+package nl.groep5.xchange.client.models;
 
-import nl.groep5.xchange.Settings;
+import nl.groep5.xchange.client.Settings;
 
 public class Peer {
 

@@ -1,4 +1,4 @@
-package nl.groep5.xchange;
+package nl.groep5.xchange.client;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;

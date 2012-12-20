@@ -1,4 +1,4 @@
-package old.StorageServer;
+package nl.groep5.xchange.storageServer;
 
 import java.io.BufferedReader;
 import java.io.File;

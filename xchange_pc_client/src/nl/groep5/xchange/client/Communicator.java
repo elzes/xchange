@@ -1,4 +1,4 @@
-package nl.groep5.xchange;
+package nl.groep5.xchange.client;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
@@ -10,8 +10,8 @@ import java.net.UnknownHostException;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import nl.groep5.xchange.models.DownloadableFile;
-import nl.groep5.xchange.models.Peer;
+import nl.groep5.xchange.client.models.DownloadableFile;
+import nl.groep5.xchange.client.models.Peer;
 
 public class Communicator {
 	private static ObservableList<Peer> peers = FXCollections

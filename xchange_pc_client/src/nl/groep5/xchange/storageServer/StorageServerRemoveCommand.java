@@ -1,4 +1,4 @@
-package old.StorageServer;
+package nl.groep5.xchange.storageServer;
 
 public class StorageServerRemoveCommand extends StorageServerCommand {
 

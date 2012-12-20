@@ -1,4 +1,4 @@
-package nl.groep5.xchange;
+package nl.groep5.xchange.client;
 
 import java.io.BufferedReader;
 import java.io.IOException;
