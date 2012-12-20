@@ -38,14 +38,11 @@ public class Main extends Application {
 	private OtherPeerListener otherPeerListener;
 
 	private Stage stage;
+	public State state;
 	private final double MINIMUM_WINDOW_WIDTH = 200.0;
 	private final double MINIMUM_WINDOW_HEIGHT = 150.0;
 	private final double MAXIMUM_WINDOW_WIDTH = 660.0;
 	private final double MAXIMUM_WINDOW_HEIGHT = 420.0;
-
-	private String routerIP;
-	private String storageServerIP;
-	private String nameServerIP;
 
 	/**
 	 * @param args
@@ -65,7 +62,15 @@ public class Main extends Application {
 			stage.setMinHeight(MINIMUM_WINDOW_HEIGHT);
 			stage.setMaxWidth(MAXIMUM_WINDOW_WIDTH);
 			stage.setMaxHeight(MAXIMUM_WINDOW_HEIGHT);
-			gotoMain();
+			loadSettings();
+			if(loadSettings())
+				gotoMain();
+			else if(!(Settings.getNameServerIp().equals("")) &&
+					!(Settings.getStorageServerIp().equals("")) &&
+					!(Settings.getRouterIp().equals("")))
+				gotoMain();
+			else
+				gotoSettings();
 			primaryStage.show();
 			initSytem();
 		} catch (Exception ex) {
@@ -166,13 +171,13 @@ public class Main extends Application {
 				// read a line and split it
 				s = inStream.readLine().split("=");
 				if (s[0].equals("ns")) {
-					setNameServerIP(s[1]);
+					Settings.setNameServerIp(s[1]);
 				}
 				if (s[0].equals("ss")) {
-					setStorageServerIP(s[1]);
+					Settings.setStorageServerIp(s[1]);
 				}
 				if (s[0].equals("rt")) {
-					setRouterIP(s[1]);
+					Settings.setRouterIp(s[1]);
 				}
 			}
 			inStream.close();
@@ -183,30 +188,6 @@ public class Main extends Application {
 			return false;
 		}
 		return true;
-	}
-
-	public String getRouterIP() {
-		return routerIP;
-	}
-
-	public void setRouterIP(String routerIP) {
-		this.routerIP = routerIP;
-	}
-
-	public String getStorageServerIP() {
-		return storageServerIP;
-	}
-
-	public void setStorageServerIP(String storageServerIP) {
-		this.storageServerIP = storageServerIP;
-	}
-
-	public String getNameServerIP() {
-		return nameServerIP;
-	}
-
-	public void setNameServerIP(String nameServerIP) {
-		this.nameServerIP = nameServerIP;
 	}
 
 	@Override
