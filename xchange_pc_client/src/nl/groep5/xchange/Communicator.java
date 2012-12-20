@@ -44,6 +44,7 @@ public class Communicator {
 	}
 
 	public static ObservableList<DownloadableFile> search(String pattern) {
+		searchResults.clear();
 		for (Peer peer : peers) {
 			try {
 				searchOnPeer(peer, pattern);
@@ -74,7 +75,6 @@ public class Communicator {
 			throw new IOException();
 
 		String[] result = line.split(" ");
-		searchResults.clear();
 
 		if (result.length % 2 == 0) {
 			for (int i = 0; i < result.length; i += 2) {

@@ -11,7 +11,7 @@ public class Settings {
 	private static String infoFolder = "xchange/INFO/";
 
 	public static String getNameServerIp() {
-		return "127.0.0.1";
+		return "145.37.57.59";
 	}
 
 	public static int getNameServerPort() {

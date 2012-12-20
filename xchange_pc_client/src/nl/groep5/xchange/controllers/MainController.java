@@ -3,20 +3,17 @@ package nl.groep5.xchange.controllers;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-import nl.groep5.xchange.Main;
-import nl.groep5.xchange.State;
-
-import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.MenuItem;
 import javafx.scene.layout.AnchorPane;
+import nl.groep5.xchange.Main;
+import nl.groep5.xchange.State;
 
-public class MainController extends AnchorPane implements Initializable 
-{
-	
+public class MainController extends AnchorPane implements Initializable {
+
 	@FXML
 	Button buttonSettings;
 	@FXML
@@ -34,23 +31,19 @@ public class MainController extends AnchorPane implements Initializable
 	@FXML
 	MenuItem stopRouter;
 	State state;
-    
 
-    private static final int PEER_UPDATE_TIME = 30;//time in seconds
-    private Timeline peerUpdater;
-    
-    private Main application;
-    
-    public void setApp(Main application){
-        this.application = application;
-    }
+	private Main application;
+
+	public void setApp(Main application) {
+		this.application = application;
+	}
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		// TODO Auto-generated method stub
-		
+
 	}
-	
+
 	@FXML
 	protected void SettingsClick(ActionEvent event) {
 		application.setupSettings();

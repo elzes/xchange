@@ -34,11 +34,6 @@ public class Downloader extends Thread {
 
 			int blockSize;
 			while (!downloadIsComplete()) {
-				progressFile = new RandomAccessFile(
-						downloadableFile.getDownloadStatusFile(), "rw");
-				targetFile = new RandomAccessFile(
-						downloadableFile.getDownloadTargetFile(), "rw");
-
 				System.out.println("download not complete "
 						+ downloadableFile.getRealFileName());
 				System.out.println("download block" + curBlock + "//"
@@ -57,29 +52,28 @@ public class Downloader extends Thread {
 
 				targetFile.seek(Settings.getBlockSize() * curBlock);
 				targetFile.write(result);
-				targetFile.close();
 
 				progressFile.seek(curBlock);
 				progressFile.write((byte) '1');
-				progressFile.close();
 			}
 
 			completeDownload();
+			return;
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
 
 	private boolean downloadIsComplete() throws IOException {
-
-		progressFile = new RandomAccessFile(
-				downloadableFile.getDownloadStatusFile(), "rw");
 		byte[] byteArray = new byte[(int) progressFile.length()];
 		progressFile.seek(0);
 		progressFile.readFully(byteArray);
+
 		String content = new String(byteArray);
 		curBlock = content.indexOf('0');
+
 		return curBlock == -1;
+
 	}
 
 	private void completeDownload() throws IOException {
@@ -92,8 +86,7 @@ public class Downloader extends Thread {
 		downloadableFile.getDownloadStatusFile().delete();
 
 		File newFileName = new File(Settings.getSharedFolder()
-				+ downloadableFile.getFileName().replace(
-						Settings.getTmpExtension(), ""));
+				+ downloadableFile.getRealFileName());
 
 		// delete if new file already exists
 		if (newFileName.exists()) {

@@ -64,6 +64,8 @@ public class IncomingConnectionHandler extends Thread {
 		} else {
 			handleError();
 		}
+
+		socket.close();
 	}
 
 	private void handleGet(String substring) {

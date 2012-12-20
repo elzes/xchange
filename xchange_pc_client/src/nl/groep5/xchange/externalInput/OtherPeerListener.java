@@ -1,10 +1,14 @@
 package nl.groep5.xchange.externalInput;
 
+import java.io.IOException;
 import java.net.ServerSocket;
 
 import nl.groep5.xchange.Settings;
 
 public class OtherPeerListener extends Thread {
+
+	private ServerSocket serverSocket;
+	private boolean isStopped;
 
 	@Override
 	public void run() {
@@ -16,13 +20,22 @@ public class OtherPeerListener extends Thread {
 	}
 
 	public void listenAndHandle() throws Exception {
-		ServerSocket ss = new ServerSocket(Settings.getIncomingConnectionPort());
+		serverSocket = new ServerSocket(Settings.getIncomingConnectionPort());
 
 		// listen for incoming connections
-		while (true) {
+		while (!isStopped) {
 			IncomingConnectionHandler incomingConnectionHandler = new IncomingConnectionHandler(
-					ss.accept());
+					serverSocket.accept());
 			incomingConnectionHandler.start();
+		}
+	}
+
+	public void stopListening() {
+		try {
+			isStopped = true;
+			serverSocket.close();
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 }
