@@ -13,6 +13,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.text.Text;
 import nl.groep5.xchange.Communicator;
 import nl.groep5.xchange.models.DownloadableFile;
 
@@ -53,6 +54,7 @@ public class SearchController extends Control implements Initializable {
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		searchResults.setItems(Communicator.getSearchResults());
+		searchResults.setPlaceholder(new Text("No search results"));
 
 		fileName.setCellValueFactory(new PropertyValueFactory<DownloadableFile, String>(
 				"fileName"));

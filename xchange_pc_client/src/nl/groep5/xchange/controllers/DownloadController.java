@@ -14,6 +14,7 @@ import javafx.scene.control.ProgressBar;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.text.Text;
 import nl.groep5.xchange.Communicator;
 import nl.groep5.xchange.Settings;
 import nl.groep5.xchange.models.DownloadableFile;
@@ -42,6 +43,7 @@ public class DownloadController extends Control implements Initializable {
 	public void initialize(URL arg0, ResourceBundle arg1) {
 
 		downloads.setItems(pendingDownloads);
+		downloads.setPlaceholder(new Text("No pending downloads"));
 		fileName.setCellValueFactory(new PropertyValueFactory<DownloadableFile, String>(
 				"fileName"));
 		fileSize.setCellValueFactory(new PropertyValueFactory<DownloadableFile, String>(

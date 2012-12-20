@@ -104,7 +104,8 @@ public class IncomingConnectionHandler extends Thread {
 					@Override
 					public boolean accept(File file) {
 						if (pattern.equals("*")
-								|| (file.getName().indexOf(pattern) != -1)) {
+								|| (file.getName().toLowerCase()
+										.contains(pattern.toLowerCase()))) {
 							return true;
 						}
 						return false;
