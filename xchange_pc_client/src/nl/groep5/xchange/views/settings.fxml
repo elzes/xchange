@@ -7,10 +7,10 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane prefHeight="200.0" prefWidth="400.0" xmlns:fx="http://javafx.com/fxml" fx:controller="nl.groep5.xchange.controllers.SettingsController>
+<AnchorPane prefHeight="200.0" prefWidth="400.0" xmlns:fx="http://javafx.com/fxml" fx:controller="nl.groep5.xchange.controllers.SettingsController">
   <!-- TODO Add Nodes -->
   <children>
-    <GridPane prefHeight="200.0" prefWidth="400.0000999999975">
+    <GridPane prefHeight="200.0" prefWidth="400.0">
       <children>
         <Label text="Nameserver IP" GridPane.columnIndex="0" GridPane.rowIndex="0">
           <font>
@@ -19,7 +19,7 @@
         </Label>
         <Label font="$x1" text="Storageserver IP" GridPane.columnIndex="0" GridPane.rowIndex="1" />
         <Label font="$x1" text="Router IP" GridPane.columnIndex="0" GridPane.rowIndex="2" />
-        <Button mnemonicParsing="false" text="Cancel" GridPane.columnIndex="0" GridPane.halignment="RIGHT" GridPane.rowIndex="3">
+        <Button onAction="#cancelClick" mnemonicParsing="false" text="Cancel" GridPane.columnIndex="0" GridPane.halignment="RIGHT" GridPane.rowIndex="3">
           <font>
             <Font size="14.0" fx:id="x2" />
           </font>
@@ -27,14 +27,14 @@
             <Insets right="20.0" />
           </GridPane.margin>
         </Button>
-        <Button font="$x2" mnemonicParsing="false" text="Save" textAlignment="CENTER" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="3">
+        <Button onAction="#saveClick" font="$x2" mnemonicParsing="false" text="Save" textAlignment="CENTER" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="3">
           <GridPane.margin>
             <Insets left="20.0" />
           </GridPane.margin>
         </Button>
-        <TextField prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="0" />
-        <TextField prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-        <TextField prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+        <TextField prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="0" fx:id="NameServerIP" />
+        <TextField prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1" fx:id="StorageServerIP" />
+        <TextField prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="2" fx:id="RouterIP" />
       </children>
       <columnConstraints>
         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
