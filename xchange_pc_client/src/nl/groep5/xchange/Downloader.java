@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 
+import nl.groep5.xchange.communication.Communicator;
 import nl.groep5.xchange.controllers.DownloadController;
 import nl.groep5.xchange.models.DownloadableFile;
 

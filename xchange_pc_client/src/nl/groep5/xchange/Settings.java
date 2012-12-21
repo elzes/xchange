@@ -7,6 +7,8 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
+import nl.groep5.xchange.communication.Communicator;
+
 public class Settings implements Serializable {
 
 	private static final long serialVersionUID = 3297557095244201638L;
@@ -21,8 +23,11 @@ public class Settings implements Serializable {
 	private static String infoFolder = "xchange/INFO/";
 
 	private String routerIP;
+	private static int routerPort = 7000;
 	private String storageServerIP;
+	private static int storageServerPort = 9002;
 	private String nameServerIP;
+	private static int nameServerPort = 9001;
 
 	private static Settings instance;
 
@@ -39,7 +44,7 @@ public class Settings implements Serializable {
 	}
 
 	public static int getNameServerPort() {
-		return 9001;
+		return nameServerPort;
 	}
 
 	public static String getLocalIp() {
@@ -118,10 +123,18 @@ public class Settings implements Serializable {
 	public boolean validate() {
 		Communicator.resetConnections();
 		if (Communicator.signUpToNameServer() && Communicator.testRouter()
-				&& Communicator.testFileServer()) {
+				&& Communicator.testStorageServer()) {
 			return true;
 		}
 
 		return false;
+	}
+
+	public static int getRouterPort() {
+		return routerPort;
+	}
+
+	public static int getStorageServerPort() {
+		return storageServerPort;
 	}
 }

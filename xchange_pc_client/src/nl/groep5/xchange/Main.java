@@ -18,6 +18,7 @@ import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import nl.groep5.xchange.communication.Communicator;
 import nl.groep5.xchange.controllers.MainController;
 import nl.groep5.xchange.controllers.SettingsController;
 import nl.groep5.xchange.externalInput.OtherPeerListener;

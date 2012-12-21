@@ -15,8 +15,8 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.text.Text;
-import nl.groep5.xchange.Communicator;
 import nl.groep5.xchange.Settings;
+import nl.groep5.xchange.communication.Communicator;
 import nl.groep5.xchange.models.DownloadableFile;
 
 public class DownloadController extends Control implements Initializable {

@@ -6,7 +6,7 @@ import java.util.ResourceBundle;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.ListView;
-import nl.groep5.xchange.Communicator;
+import nl.groep5.xchange.communication.Communicator;
 import nl.groep5.xchange.models.Peer;
 
 public class PeersController implements Initializable {

@@ -14,7 +14,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Text;
-import nl.groep5.xchange.Communicator;
+import nl.groep5.xchange.communication.Communicator;
 import nl.groep5.xchange.models.DownloadableFile;
 
 public class SearchController extends Control implements Initializable {

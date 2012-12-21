@@ -1,4 +1,4 @@
-package nl.groep5.xchange;
+package nl.groep5.xchange.communication;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
@@ -10,6 +10,11 @@ import java.net.UnknownHostException;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+
+import javax.naming.CommunicationException;
+
+import nl.groep5.xchange.Downloader;
+import nl.groep5.xchange.Settings;
 import nl.groep5.xchange.models.DownloadableFile;
 import nl.groep5.xchange.models.Peer;
 
@@ -23,16 +28,29 @@ public class Communicator {
 	private static NameServer nameServer = new NameServer(Settings
 			.getInstance().getNameServerIp(), Settings.getNameServerPort());
 
+	private static Router router = new Router(Settings.getInstance()
+			.getRouterIp(), Settings.getRouterPort());
+
+	private static StorageServer storageServer = new StorageServer(Settings
+			.getInstance().getStorageServerIp(),
+			Settings.getStorageServerPort());
+
 	public static void resetConnections() {
 		nameServer = new NameServer(Settings.getInstance().getNameServerIp(),
 				Settings.getNameServerPort());
+
+		router = new Router(Settings.getInstance().getRouterIp(),
+				Settings.getRouterPort());
+
+		storageServer = new StorageServer(Settings.getInstance()
+				.getStorageServerIp(), Settings.getStorageServerPort());
 	}
 
 	public static boolean signUpToNameServer() {
 		try {
 			String response = nameServer.sendCommand("ADD");
 			return response.equals("OK");
-		} catch (IOException e) {
+		} catch (IOException | CommunicationException e) {
 			System.out.println("could not connect to nameserver.");
 		}
 		return false;
@@ -47,6 +65,8 @@ public class Communicator {
 			}
 		} catch (IOException e) {
 			System.out.println("Failed to update peerlist.");
+		} catch (CommunicationException e) {
+			System.out.println("Failed to update peerlist. Server error.");
 		}
 	}
 
@@ -147,10 +167,26 @@ public class Communicator {
 	}
 
 	public static boolean testRouter() {
+		try {
+			String result = router.sendCommand("IS ROUTER");
+			if (result.equals("ok"))
+				return true;
+		} catch (CommunicationException | IOException e) {
+			e.printStackTrace();
+		}
+		// TODO change to false
 		return true;
 	}
 
-	public static boolean testFileServer() {
+	public static boolean testStorageServer() {
+		try {
+			String result = storageServer.sendCommand("IS STORAGE SERVER");
+			if (result.equals("ok"))
+				return true;
+		} catch (CommunicationException | IOException e) {
+			e.printStackTrace();
+		}
+		// TODO change to false
 		return true;
 	}
 }

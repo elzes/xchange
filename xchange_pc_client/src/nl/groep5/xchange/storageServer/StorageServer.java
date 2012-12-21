@@ -10,6 +10,8 @@ import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 
+import nl.groep5.xchange.Settings;
+
 import old.helpers.FileHelper;
 import old.xchange.Debug;
 
@@ -21,7 +23,7 @@ import old.xchange.Debug;
 public class StorageServer {
 
 	private static final String STORAGE_DIR = "./files/";
-	private final int port = 9002;
+	private final int port = Settings.getStorageServerPort();
 	private final int BLOCKSIZE = 64 * 1024;
 
 	// un-buffered socket stream (flushing has no purpose)

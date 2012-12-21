@@ -1,4 +1,4 @@
-package nl.groep5.xchange;
+package nl.groep5.xchange.communication;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -9,19 +9,21 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
-public class NameServer {
+import javax.naming.CommunicationException;
 
-	private static final int SOCKET_TIMEOUT = 5;
-	private String ip;
-	private int port;
+public class ExternalDeviceCommunication {
 
-	public NameServer(String nameServerIp, int nameServerPort) {
-		this.ip = nameServerIp;
-		this.port = nameServerPort;
+	protected static final int SOCKET_TIMEOUT = 5;
+	protected String ip;
+	protected int port;
+
+	public ExternalDeviceCommunication(String ip, int port) {
+		this.ip = ip;
+		this.port = port;
 	}
 
 	public String sendCommand(String command) throws UnknownHostException,
-			IOException, ConnectException {
+			IOException, ConnectException, CommunicationException {
 
 		try {
 			Socket socket = new Socket();
@@ -32,8 +34,8 @@ public class NameServer {
 
 			PrintWriter printWriter = new PrintWriter(socket.getOutputStream(),
 					true);
-			System.out.println("Going to write to NameServer command  "
-					+ command);
+			System.out.println("Going to write to " + this.getClass().getName()
+					+ " command:  " + command);
 			printWriter.println(command);
 
 			String line = null;
@@ -42,13 +44,13 @@ public class NameServer {
 			} while (line == null);
 
 			if (line.startsWith("FAIL"))
-				throw new IOException();
+				throw new CommunicationException();
 
-			System.out.println("Done with command " + command);
+			System.out.println("Done with command " + command + " to device "
+					+ this.getClass().getName());
 			return line;
 		} catch (ConnectException e) {
 			throw new UnknownHostException();
 		}
-
 	}
 }
