@@ -6,7 +6,9 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 
 import javafx.scene.control.ProgressBar;
+import nl.groep5.xchange.Downloader;
 import nl.groep5.xchange.Settings;
+import nl.groep5.xchange.controllers.DownloadController;
 
 public class DownloadableFile {
 
@@ -14,6 +16,7 @@ public class DownloadableFile {
 	private final String fileSize;
 	private final Peer peer;
 	private ProgressBar progressBar;
+	private Downloader downLoader;
 
 	public DownloadableFile(String fileName, String fileSize, Peer peer) {
 		this.fileName = fileName;
@@ -114,7 +117,7 @@ public class DownloadableFile {
 		}
 
 		progressBar.setProgress(getProgress());
-
+		progressBar.setPrefWidth(DownloadController.PROGRESSBAR_WIDTH);
 		return progressBar;
 	}
 
@@ -149,5 +152,13 @@ public class DownloadableFile {
 
 	public void updateProgressBar() {
 		getProgressBar();
+	}
+
+	public void setDownloader(Downloader downLoader) {
+		this.downLoader = downLoader;
+	}
+
+	public Downloader getDownLoader() {
+		return downLoader;
 	}
 }

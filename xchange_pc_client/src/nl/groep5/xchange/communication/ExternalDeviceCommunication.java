@@ -36,7 +36,7 @@ public class ExternalDeviceCommunication {
 
 			PrintWriter printWriter = new PrintWriter(socket.getOutputStream(),
 					true);
-			if (Settings.debug) {
+			if (Settings.DEBUG) {
 				System.out.println("Going to write to "
 						+ this.getClass().getName() + " command:  " + command);
 			}
@@ -50,7 +50,7 @@ public class ExternalDeviceCommunication {
 			if (line.startsWith("FAIL"))
 				throw new CommunicationException();
 
-			if (Settings.debug) {
+			if (Settings.DEBUG) {
 				System.out.println("Done with command " + command
 						+ " to device " + this.getClass().getName());
 			}

@@ -1,0 +1,8 @@
+pc -> router START DOWNLOAD <filename|filesize|block_count|download_info_string|<ip1|ip2|ip3>|<filename2|filesize2|block_count2|download_info_string2|<ip21|ip22|ip23>
+router-> pc OK / FAIL
+
+pc -> router SET SETTINGS nameserverip|fileserverip
+router -> pc OK / FAIL
+
+pc -> router STOP DOWNLOAD
+router -> pc FAIL / OK <filename|download_info_string>|<filename2|download_info_string2>

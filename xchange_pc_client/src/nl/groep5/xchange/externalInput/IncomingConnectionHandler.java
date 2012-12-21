@@ -39,7 +39,7 @@ public class IncomingConnectionHandler extends Thread {
 	 * handle incoming messages all messages are strings ending on "\n"
 	 */
 	private void handle(Socket socket) throws Exception {
-		if (Settings.debug) {
+		if (Settings.DEBUG) {
 			System.out.println("New incoming connection from "
 					+ socket.getInetAddress().getHostAddress());
 		}
@@ -57,7 +57,7 @@ public class IncomingConnectionHandler extends Thread {
 			line = bufferedReader.readLine();
 		} while (line == null);
 
-		if (Settings.debug) {
+		if (Settings.DEBUG) {
 			System.out.println("command from client " + line);
 		}
 

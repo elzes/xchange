@@ -18,6 +18,7 @@ import javax.swing.JFileChooser;
 
 import nl.groep5.xchange.Main;
 import nl.groep5.xchange.State;
+import nl.groep5.xchange.communication.Communicator;
 
 public class MainController extends AnchorPane implements Initializable {
 
@@ -46,7 +47,6 @@ public class MainController extends AnchorPane implements Initializable {
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		// TODO Auto-generated method stub
 
 	}
 
@@ -105,30 +105,30 @@ public class MainController extends AnchorPane implements Initializable {
 
 	@FXML
 	protected void StartPCDownloadClick(ActionEvent event) {
-		application.state = State.LOCAL_START;
-		updateGUI();
+		Main.state = State.LOCAL_START;
+		processStateChange();
 	}
 
 	@FXML
 	protected void StopPCDownloadClick(ActionEvent event) {
-		application.state = State.LOCAL_STOP;
-		updateGUI();
+		Main.state = State.LOCAL_STOP;
+		processStateChange();
 	}
 
 	@FXML
 	protected void StartRouterDownloadClick(ActionEvent event) {
-		application.state = State.ROUTER_START;
-		updateGUI();
+		Main.state = State.ROUTER_START;
+		processStateChange();
 	}
 
 	@FXML
 	protected void StopRouterDownloadClick(ActionEvent event) {
-		application.state = State.ROUTER_STOP;
-		updateGUI();
+		Main.state = State.ROUTER_STOP;
+		processStateChange();
 	}
 
-	public void updateGUI() {
-		switch (application.state) {
+	public void processStateChange() {
+		switch (Main.state) {
 		case NO_SETTINGS:
 			settings.setDisable(false);
 			shareFile.setDisable(true);
@@ -152,6 +152,7 @@ public class MainController extends AnchorPane implements Initializable {
 			stopPC.setDisable(false);
 			startRouter.setDisable(true);
 			stopRouter.setDisable(true);
+			DownloadController.startDownloads();
 			break;
 		case LOCAL_STOP:
 			settings.setDisable(false);
@@ -160,6 +161,7 @@ public class MainController extends AnchorPane implements Initializable {
 			stopPC.setDisable(true);
 			startRouter.setDisable(false);
 			stopRouter.setDisable(true);
+			DownloadController.stopDownloads();
 			break;
 		case ROUTER_START:
 			settings.setDisable(true);
@@ -168,6 +170,7 @@ public class MainController extends AnchorPane implements Initializable {
 			stopPC.setDisable(true);
 			startRouter.setDisable(true);
 			stopRouter.setDisable(false);
+			Communicator.startRouterDownload();
 			break;
 		case ROUTER_STOP:
 			settings.setDisable(false);
@@ -176,6 +179,7 @@ public class MainController extends AnchorPane implements Initializable {
 			stopPC.setDisable(true);
 			startRouter.setDisable(true);
 			stopRouter.setDisable(true);
+			Communicator.stopRouterDownload();
 			break;
 		}
 	}

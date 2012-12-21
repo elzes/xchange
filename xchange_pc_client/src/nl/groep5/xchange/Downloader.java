@@ -14,6 +14,7 @@ public class Downloader extends Thread {
 	private RandomAccessFile progressFile;
 	private int curBlock;
 	private RandomAccessFile targetFile;
+	public boolean running;
 
 	public Downloader(DownloadableFile downloadableFile) {
 		this.downloadableFile = downloadableFile;
@@ -21,7 +22,8 @@ public class Downloader extends Thread {
 
 	@Override
 	public void run() {
-		if (Settings.debug) {
+		running = true;
+		if (Settings.DEBUG) {
 			System.out.println("Downloader.run()");
 		}
 		try {
@@ -30,7 +32,7 @@ public class Downloader extends Thread {
 			targetFile = new RandomAccessFile(
 					downloadableFile.getDownloadTargetFile(), "rw");
 
-			if (Settings.debug) {
+			if (Settings.DEBUG) {
 				System.out.println("complete: " + downloadIsComplete());
 			}
 			if (downloadIsComplete()) {
@@ -39,7 +41,7 @@ public class Downloader extends Thread {
 			}
 
 			int blockSize;
-			while (!downloadIsComplete()) {
+			while (!downloadIsComplete() && running) {
 
 				if (curBlock < downloadableFile.getNoOfBlocks() - 1) {
 					blockSize = Settings.getBlockSize();
@@ -58,7 +60,13 @@ public class Downloader extends Thread {
 				downloadableFile.updateProgressBar();
 			}
 
-			completeDownload();
+			if (downloadIsComplete()) {
+				completeDownload();
+			} else {
+				progressFile.close();
+				targetFile.close();
+			}
+
 			return;
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -81,7 +89,7 @@ public class Downloader extends Thread {
 		progressFile.close();
 		targetFile.close();
 
-		if (Settings.debug) {
+		if (Settings.DEBUG) {
 			System.out.println("complete download of "
 					+ downloadableFile.getRealFileName());
 		}
@@ -92,7 +100,7 @@ public class Downloader extends Thread {
 
 		// delete if new file already exists
 		if (newFileName.exists()) {
-			if (Settings.debug) {
+			if (Settings.DEBUG) {
 				System.out
 						.println("Going to delete downloaded file because target already exsists");
 			}

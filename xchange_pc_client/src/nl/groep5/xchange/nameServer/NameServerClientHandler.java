@@ -45,9 +45,10 @@ public class NameServerClientHandler extends Thread {
 			line = in.readLine();
 		} while (line == null);
 
+		String externalIp = s.getInetAddress().getHostAddress();
+
 		if (line.startsWith("ADD")) {
-			nameServer.handleAdd(line + " "
-					+ s.getInetAddress().getHostAddress(), out);
+			nameServer.handleAdd(line + " " + externalIp, out);
 		}
 
 		else if (line.startsWith("REMOVE")) {
@@ -55,7 +56,7 @@ public class NameServerClientHandler extends Thread {
 		}
 
 		else if (line.startsWith("LIST")) {
-			nameServer.handleList(out);
+			nameServer.handleList(out, externalIp);
 		}
 
 		else {

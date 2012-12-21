@@ -87,7 +87,7 @@ public class NameServer {
 		}
 	}
 
-	public void handleList(PrintWriter out) throws Exception {
+	public void handleList(PrintWriter out, String ownIp) throws Exception {
 		if (DEBUG) {
 			System.out.println("Nameserver received LIST request");
 			System.out.println("Handle list");
@@ -95,6 +95,8 @@ public class NameServer {
 
 		synchronized (list) {
 			for (String ip : list) {
+				if (ip.equals(ownIp))
+					continue;
 				out.print(ip + " ");
 			}
 		}

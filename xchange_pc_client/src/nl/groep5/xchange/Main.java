@@ -33,7 +33,7 @@ public class Main extends Application {
 	private OtherPeerListener otherPeerListener;
 
 	private Stage stage;
-	public State state;
+	public static State state;
 	private final double MINIMUM_WINDOW_WIDTH = 200.0;
 	private final double MINIMUM_WINDOW_HEIGHT = 150.0;
 	private final double MAXIMUM_WINDOW_WIDTH = 660.0;
@@ -60,7 +60,7 @@ public class Main extends Application {
 			try {
 				Settings.getInstance().load();
 			} catch (IOException e) {
-				if (Settings.debug) {
+				if (Settings.DEBUG) {
 					System.out.println("Could not load the settings");
 				}
 			}

@@ -15,12 +15,16 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.text.Text;
+import nl.groep5.xchange.Downloader;
+import nl.groep5.xchange.Main;
 import nl.groep5.xchange.Settings;
+import nl.groep5.xchange.State;
 import nl.groep5.xchange.communication.Communicator;
 import nl.groep5.xchange.models.DownloadableFile;
 
 public class DownloadController extends Control implements Initializable {
 
+	public static final double PROGRESSBAR_WIDTH = 160;
 	@FXML
 	TableView<DownloadableFile> downloads;
 	@FXML
@@ -34,12 +38,13 @@ public class DownloadController extends Control implements Initializable {
 			.observableArrayList();
 
 	public static void addDownload(DownloadableFile downloadableFile) {
-		if (Settings.debug) {
+		if (Settings.DEBUG) {
 			System.out.println("Added download "
 					+ downloadableFile.getFileName());
 		}
 		pendingDownloads.add(downloadableFile);
-		Communicator.startDownload(downloadableFile);
+		if (Main.state == State.LOCAL_START)
+			Communicator.startDownload(downloadableFile);
 	}
 
 	@Override
@@ -73,7 +78,6 @@ public class DownloadController extends Control implements Initializable {
 					.getDownloadableFileFromName(file.getName());
 			if (downloadableFile != null) {
 				pendingDownloads.add(downloadableFile);
-				Communicator.startDownload(downloadableFile);
 			}
 		}
 	}
@@ -85,5 +89,20 @@ public class DownloadController extends Control implements Initializable {
 
 	public static void removeDownload(DownloadableFile downloadableFile) {
 		pendingDownloads.remove(downloadableFile);
+	}
+
+	public static void startDownloads() {
+		for (DownloadableFile downloadableFile : pendingDownloads) {
+			Communicator.startDownload(downloadableFile);
+		}
+	}
+
+	public static void stopDownloads() {
+		for (DownloadableFile downloadableFile : pendingDownloads) {
+			Downloader downloader = downloadableFile.getDownLoader();
+			if (downloader != null) {
+				downloader.running = false;
+			}
+		}
 	}
 }

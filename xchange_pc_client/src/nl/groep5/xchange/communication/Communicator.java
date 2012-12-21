@@ -51,7 +51,7 @@ public class Communicator {
 			String response = nameServer.sendCommand("ADD");
 			return response.equals("OK");
 		} catch (IOException | CommunicationException e) {
-			if (Settings.debug) {
+			if (Settings.DEBUG) {
 				System.out.println("could not connect to nameserver.");
 			}
 		}
@@ -66,11 +66,11 @@ public class Communicator {
 				peers.add(new Peer(s));
 			}
 		} catch (IOException e) {
-			if (Settings.debug) {
+			if (Settings.DEBUG) {
 				System.out.println("Failed to update peerlist.");
 			}
 		} catch (CommunicationException e) {
-			if (Settings.debug) {
+			if (Settings.DEBUG) {
 				System.out.println("Failed to update peerlist. Server error.");
 			}
 		}
@@ -118,7 +118,7 @@ public class Communicator {
 				searchResults.add(downloadableFile);
 			}
 		}
-		if (Settings.debug) {
+		if (Settings.DEBUG) {
 			System.out.println("RESULT: " + line);
 		}
 	}
@@ -148,6 +148,7 @@ public class Communicator {
 
 	public static void startDownload(DownloadableFile downloadableFile) {
 		Downloader downLoader = new Downloader(downloadableFile);
+		downloadableFile.setDownloader(downLoader);
 		downLoader.start();
 	}
 
@@ -174,7 +175,7 @@ public class Communicator {
 		return byteArray;
 	}
 
-	public static boolean testRouter() {
+	public static boolean setRouterSettings() {
 		try {
 			String result = router.sendCommand("IS ROUTER");
 			if (result.equals("ok"))
@@ -184,6 +185,19 @@ public class Communicator {
 		}
 		// TODO change to false
 		return true;
+	}
+
+	public static void startRouterDownload() {
+		//TODO
+	}
+
+	public static void stopRouterDownload() {
+		// TODO
+		mergeRouterDownload();
+	}
+
+	private static void mergeRouterDownload() {
+		// TODO
 	}
 
 	public static boolean testStorageServer() {

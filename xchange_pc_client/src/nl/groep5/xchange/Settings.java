@@ -31,7 +31,7 @@ public class Settings implements Serializable {
 
 	private static Settings instance;
 
-	public static boolean debug = false;
+	public static final boolean DEBUG = true;
 
 	public String getNameServerIp() {
 		return nameServerIP;
@@ -124,8 +124,9 @@ public class Settings implements Serializable {
 
 	public boolean validate() {
 		Communicator.resetConnections();
-		if (Communicator.signUpToNameServer() && Communicator.testRouter()
-				&& Communicator.testStorageServer()) {
+		if (Communicator.signUpToNameServer()
+				&& Communicator.testStorageServer()
+				&& Communicator.setRouterSettings()) {
 			return true;
 		}
 
