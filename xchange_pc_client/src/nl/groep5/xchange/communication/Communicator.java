@@ -165,8 +165,13 @@ public class Communicator {
 		while (n < 1) {
 			n = bufferedInputStream.read(byteArray, 0, size);
 		}
+
+		String response = new String(byteArray);
+		if (response.startsWith("FAIL")) {
+			byteArray = null;
+		}
 		if (Settings.DEBUG) {
-			System.out.println(new String(byteArray));
+			System.out.println(response);
 		}
 
 		return byteArray;

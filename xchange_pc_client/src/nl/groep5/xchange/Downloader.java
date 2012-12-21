@@ -3,6 +3,7 @@ package nl.groep5.xchange;
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.util.ArrayList;
 
 import nl.groep5.xchange.communication.Communicator;
 import nl.groep5.xchange.controllers.DownloadController;
@@ -15,6 +16,7 @@ public class Downloader extends Thread {
 	private int curBlock;
 	private RandomAccessFile targetFile;
 	public boolean running;
+	private ArrayList<Integer> excludeList = new ArrayList<Integer>();
 
 	public Downloader(DownloadableFile downloadableFile) {
 		this.downloadableFile = downloadableFile;
@@ -54,6 +56,10 @@ public class Downloader extends Thread {
 				}
 				byte[] result = Communicator.GetBlockFromPeer(downloadableFile,
 						curBlock, blockSize);
+				if (result == null) {
+					excludeList.add(curBlock);
+					continue;
+				}
 
 				targetFile.seek(Settings.getBlockSize() * curBlock);
 				targetFile.write(result);
@@ -82,7 +88,23 @@ public class Downloader extends Thread {
 		progressFile.readFully(byteArray);
 
 		String content = new String(byteArray);
-		curBlock = content.indexOf('0');
+		curBlock = content.indexOf('0', curBlock);
+		if (Settings.DEBUG) {
+			System.out.println("block " + curBlock + "selected");
+		}
+
+		if (excludeList.contains(new Integer(curBlock))) {
+			System.out.println("Curblock in excludeList");
+			curBlock = content.indexOf('0', curBlock + 1);
+			System.out.println("New curblock " + curBlock);
+		}
+
+		if (curBlock == -1) {
+			curBlock = content.indexOf('0');
+			System.out
+					.println("last curblock is last to be downloaded curblock now again "
+							+ curBlock);
+		}
 
 		return curBlock == -1;
 
