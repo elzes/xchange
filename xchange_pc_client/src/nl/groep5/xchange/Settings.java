@@ -31,6 +31,8 @@ public class Settings implements Serializable {
 
 	private static Settings instance;
 
+	public static boolean debug = false;
+
 	public String getNameServerIp() {
 		return nameServerIP;
 	}

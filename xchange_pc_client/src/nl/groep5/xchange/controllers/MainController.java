@@ -53,7 +53,6 @@ public class MainController extends AnchorPane implements Initializable {
 	@FXML
 	protected void SettingsClick(ActionEvent event) {
 		application.showSettings();
-		System.out.println("Settings clicked!");
 	}
 
 	@FXML

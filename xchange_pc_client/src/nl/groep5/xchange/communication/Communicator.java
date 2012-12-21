@@ -51,7 +51,9 @@ public class Communicator {
 			String response = nameServer.sendCommand("ADD");
 			return response.equals("OK");
 		} catch (IOException | CommunicationException e) {
-			System.out.println("could not connect to nameserver.");
+			if (Settings.debug) {
+				System.out.println("could not connect to nameserver.");
+			}
 		}
 		return false;
 	}
@@ -64,9 +66,13 @@ public class Communicator {
 				peers.add(new Peer(s));
 			}
 		} catch (IOException e) {
-			System.out.println("Failed to update peerlist.");
+			if (Settings.debug) {
+				System.out.println("Failed to update peerlist.");
+			}
 		} catch (CommunicationException e) {
-			System.out.println("Failed to update peerlist. Server error.");
+			if (Settings.debug) {
+				System.out.println("Failed to update peerlist. Server error.");
+			}
 		}
 	}
 
@@ -112,7 +118,9 @@ public class Communicator {
 				searchResults.add(downloadableFile);
 			}
 		}
-		System.out.println("RESULT: " + line);
+		if (Settings.debug) {
+			System.out.println("RESULT: " + line);
+		}
 	}
 
 	public static ObservableList<Peer> getPeers() {

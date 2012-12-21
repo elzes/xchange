@@ -60,7 +60,9 @@ public class Main extends Application {
 			try {
 				Settings.getInstance().load();
 			} catch (IOException e) {
-				System.out.println("Could not load the settings");
+				if (Settings.debug) {
+					System.out.println("Could not load the settings");
+				}
 			}
 			if (Settings.getInstance().validate()) {
 				gotoMain();

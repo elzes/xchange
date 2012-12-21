@@ -90,8 +90,9 @@ public class NameServer {
 	public void handleList(PrintWriter out) throws Exception {
 		if (DEBUG) {
 			System.out.println("Nameserver received LIST request");
+			System.out.println("Handle list");
 		}
-		System.out.println("Handle list");
+
 		synchronized (list) {
 			for (String ip : list) {
 				out.print(ip + " ");

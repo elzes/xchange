@@ -21,14 +21,18 @@ public class Downloader extends Thread {
 
 	@Override
 	public void run() {
-		System.out.println("Downloader.run()");
+		if (Settings.debug) {
+			System.out.println("Downloader.run()");
+		}
 		try {
 			progressFile = new RandomAccessFile(
 					downloadableFile.getDownloadStatusFile(), "rw");
 			targetFile = new RandomAccessFile(
 					downloadableFile.getDownloadTargetFile(), "rw");
 
-			System.out.println("complete: " + downloadIsComplete());
+			if (Settings.debug) {
+				System.out.println("complete: " + downloadIsComplete());
+			}
 			if (downloadIsComplete()) {
 				completeDownload();
 				return;
@@ -77,9 +81,10 @@ public class Downloader extends Thread {
 		progressFile.close();
 		targetFile.close();
 
-		System.out.println("complete download of "
-				+ downloadableFile.getRealFileName());
-
+		if (Settings.debug) {
+			System.out.println("complete download of "
+					+ downloadableFile.getRealFileName());
+		}
 		downloadableFile.getDownloadStatusFile().delete();
 
 		File newFileName = new File(Settings.getSharedFolder()
@@ -87,8 +92,10 @@ public class Downloader extends Thread {
 
 		// delete if new file already exists
 		if (newFileName.exists()) {
-			System.out
-					.println("Going to delete downloaded file because target already exsists");
+			if (Settings.debug) {
+				System.out
+						.println("Going to delete downloaded file because target already exsists");
+			}
 			downloadableFile.getDownloadTargetFile().delete();
 		}
 

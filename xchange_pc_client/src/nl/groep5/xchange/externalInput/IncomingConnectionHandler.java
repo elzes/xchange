@@ -39,8 +39,10 @@ public class IncomingConnectionHandler extends Thread {
 	 * handle incoming messages all messages are strings ending on "\n"
 	 */
 	private void handle(Socket socket) throws Exception {
-		System.out.println("New incoming connection from "
-				+ socket.getInetAddress().getHostAddress());
+		if (Settings.debug) {
+			System.out.println("New incoming connection from "
+					+ socket.getInetAddress().getHostAddress());
+		}
 
 		bufferedReader = new BufferedReader(new InputStreamReader(
 				socket.getInputStream()));
@@ -55,7 +57,9 @@ public class IncomingConnectionHandler extends Thread {
 			line = bufferedReader.readLine();
 		} while (line == null);
 
-		System.out.println("command from client " + line);
+		if (Settings.debug) {
+			System.out.println("command from client " + line);
+		}
 
 		if (line.startsWith(SEARCH_COMMAND)) {
 			handleSearch(line.substring(SEARCH_COMMAND.length()));

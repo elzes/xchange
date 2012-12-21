@@ -11,7 +11,6 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 import nl.groep5.xchange.Settings;
-
 import old.helpers.FileHelper;
 import old.xchange.Debug;
 

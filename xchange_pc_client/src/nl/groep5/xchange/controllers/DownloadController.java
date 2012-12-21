@@ -34,7 +34,10 @@ public class DownloadController extends Control implements Initializable {
 			.observableArrayList();
 
 	public static void addDownload(DownloadableFile downloadableFile) {
-		System.out.println("Added download " + downloadableFile.getFileName());
+		if (Settings.debug) {
+			System.out.println("Added download "
+					+ downloadableFile.getFileName());
+		}
 		pendingDownloads.add(downloadableFile);
 		Communicator.startDownload(downloadableFile);
 	}
