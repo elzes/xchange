@@ -33,7 +33,8 @@ public class Settings implements Serializable {
 
 	public static final boolean DEBUG = true;
 
-	private static final String SPLIT_CHAR = "\\|";
+	private static final String SPLIT_CHAR = "|";
+	private static final String SPLIT_CHAR_REG_EX = "\\" + SPLIT_CHAR;
 
 	public String getNameServerIp() {
 		return nameServerIP;
@@ -145,5 +146,9 @@ public class Settings implements Serializable {
 
 	public static String getSplitChar() {
 		return SPLIT_CHAR;
+	}
+
+	public static String getSplitCharRegEx() {
+		return SPLIT_CHAR_REG_EX;
 	}
 }

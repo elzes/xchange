@@ -1,12 +1,14 @@
 package nl.groep5.xchange.storageServer;
 
+import nl.groep5.xchange.Settings;
+
 public abstract class StorageServerCommand {
 
 	private String fileName;
 	protected String[] command;
 
 	public StorageServerCommand(String line) throws InvalidCommandException {
-		command = line.split(" ");
+		command = line.split(Settings.getSplitCharRegEx());
 		if (command.length < getMinCommandLength()) {
 			throw new InvalidCommandException("invalid command length");
 		}

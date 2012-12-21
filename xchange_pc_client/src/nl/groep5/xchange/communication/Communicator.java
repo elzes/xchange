@@ -63,7 +63,7 @@ public class Communicator {
 		try {
 			String result = nameServer.sendCommand("LIST");
 			peers.clear();
-			for (String s : result.split(Settings.getSplitChar())) {
+			for (String s : result.split(Settings.getSplitCharRegEx())) {
 				peers.add(new Peer(s));
 			}
 		} catch (IOException e) {
@@ -109,8 +109,8 @@ public class Communicator {
 			throw new IOException();
 
 		System.out.println("Line :" + line);
-		System.out.println("SPLIT CHAR " + Settings.getSplitChar());
-		String[] result = line.split(Settings.getSplitChar());
+		System.out.println("SPLIT CHAR " + Settings.getSplitCharRegEx());
+		String[] result = line.split(Settings.getSplitCharRegEx());
 		System.out.println("RESULT: " + Arrays.toString(result));
 
 		if (result.length % 2 == 0) {

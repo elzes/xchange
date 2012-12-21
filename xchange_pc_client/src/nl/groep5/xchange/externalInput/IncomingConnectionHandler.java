@@ -73,7 +73,7 @@ public class IncomingConnectionHandler extends Thread {
 	}
 
 	private void handleGet(String substring) {
-		String[] command = substring.split(Settings.getSplitChar());
+		String[] command = substring.split(Settings.getSplitCharRegEx());
 		String fileName = command[0];
 
 		File file = new File(Settings.getSharedFolder() + fileName);
