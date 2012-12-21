@@ -73,12 +73,18 @@ public class DownloadController extends Control implements Initializable {
 					}
 				});
 
+		if (Settings.DEBUG) {
+			System.out.println("Resum list size" + downloadingFiles.length);
+		}
 		for (File file : downloadingFiles) {
-			DownloadableFile downloadableFile = Communicator
-					.getDownloadableFileFromName(file.getName());
-			if (downloadableFile != null) {
-				pendingDownloads.add(downloadableFile);
+			String fileName = file.getName().replace(
+					Settings.getTmpExtension(), "");
+			if (Settings.DEBUG) {
+				System.out.println("trying to restart file " + fileName);
 			}
+			DownloadableFile downloadableFile = new DownloadableFile(fileName,
+					"" + file.length(), null);
+			pendingDownloads.add(downloadableFile);
 		}
 	}
 

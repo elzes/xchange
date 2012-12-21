@@ -62,7 +62,7 @@ public class Communicator {
 		try {
 			String result = nameServer.sendCommand("LIST");
 			peers.clear();
-			for (String s : result.split(" ")) {
+			for (String s : result.split(Settings.getSplitChar())) {
 				peers.add(new Peer(s));
 			}
 		} catch (IOException e) {
@@ -107,7 +107,7 @@ public class Communicator {
 		if (line.startsWith("FAIL"))
 			throw new IOException();
 
-		String[] result = line.split(" ");
+		String[] result = line.split(Settings.getSplitChar());
 
 		if (result.length % 2 == 0) {
 			for (int i = 0; i < result.length; i += 2) {
@@ -135,17 +135,6 @@ public class Communicator {
 		searchResults.clear();
 	}
 
-	public static DownloadableFile getDownloadableFileFromName(String name) {
-		ObservableList<DownloadableFile> results = search(name);
-
-		for (DownloadableFile downloadableFile : results) {
-			if (downloadableFile.getFileName().equals(name))
-				return downloadableFile;
-		}
-
-		return null;
-	}
-
 	public static void startDownload(DownloadableFile downloadableFile) {
 		Downloader downLoader = new Downloader(downloadableFile);
 		downloadableFile.setDownloader(downLoader);
@@ -154,6 +143,7 @@ public class Communicator {
 
 	public static byte[] GetBlockFromPeer(DownloadableFile downloadableFile,
 			int curBlock, int size) throws UnknownHostException, IOException {
+
 		Socket socket = new Socket(downloadableFile.getPeer().getIp(),
 				downloadableFile.getPeer().getPort());
 
@@ -162,8 +152,8 @@ public class Communicator {
 		PrintWriter printWriter = new PrintWriter(socket.getOutputStream(),
 				true);
 
-		printWriter.println("GET " + downloadableFile.getRealFileName() + " "
-				+ curBlock);
+		printWriter.println("GET " + downloadableFile.getRealFileName()
+				+ Settings.getSplitChar() + curBlock);
 
 		byte[] byteArray = new byte[size];
 
@@ -188,7 +178,7 @@ public class Communicator {
 	}
 
 	public static void startRouterDownload() {
-		//TODO
+		// TODO
 	}
 
 	public static void stopRouterDownload() {
@@ -210,5 +200,17 @@ public class Communicator {
 		}
 		// TODO change to false
 		return true;
+	}
+
+	public static void searchPeerForBlock(DownloadableFile downloadableFile,
+			int curBlock, int size) {
+		for (Peer peer : peers) {
+			try {
+				downloadableFile.setPeer(peer);
+				GetBlockFromPeer(downloadableFile, curBlock, size);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 }

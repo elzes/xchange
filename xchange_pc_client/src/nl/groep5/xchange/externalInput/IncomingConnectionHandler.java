@@ -73,11 +73,9 @@ public class IncomingConnectionHandler extends Thread {
 	}
 
 	private void handleGet(String substring) {
-		String[] command = substring.split(" ");
-		String fileName = "";
-		for (int i = 0; i <= command.length - 2; i++) {
-			fileName += command[i];
-		}
+		String[] command = substring.split(Settings.getSplitChar());
+		String fileName = command[0];
+
 		File file = new File(Settings.getSharedFolder() + fileName);
 		if (!file.exists()) {
 			handleError();
@@ -117,7 +115,8 @@ public class IncomingConnectionHandler extends Thread {
 				});
 
 		for (File file : foundFiles) {
-			printWriter.print(file.getName() + " " + file.length() + " ");
+			printWriter.print(file.getName() + Settings.getSplitChar()
+					+ file.length() + Settings.getSplitChar());
 		}
 
 		printWriter.println();

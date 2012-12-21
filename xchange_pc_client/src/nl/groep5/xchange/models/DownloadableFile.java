@@ -12,9 +12,9 @@ import nl.groep5.xchange.controllers.DownloadController;
 
 public class DownloadableFile {
 
-	private final String fileName;
-	private final String fileSize;
-	private final Peer peer;
+	private String fileName;
+	private String fileSize;
+	private Peer peer;
 	private ProgressBar progressBar;
 	private Downloader downLoader;
 
@@ -42,8 +42,8 @@ public class DownloadableFile {
 
 	public File getDownloadTargetFile() throws FileNotFoundException,
 			IOException {
-		File file = new File(Settings.getSharedFolder()
-				+ getFileNameWithoutExtension() + Settings.getTmpExtension());
+		File file = new File(Settings.getSharedFolder() + getFileName()
+				+ Settings.getTmpExtension());
 
 		if (!file.exists() /* && getCompleteFile() == null TODO activate */) {
 			file.createNewFile();
@@ -160,5 +160,9 @@ public class DownloadableFile {
 
 	public Downloader getDownLoader() {
 		return downLoader;
+	}
+
+	public void setPeer(Peer peer) {
+		this.peer = peer;
 	}
 }

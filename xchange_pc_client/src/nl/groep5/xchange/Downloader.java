@@ -48,7 +48,10 @@ public class Downloader extends Thread {
 				} else {
 					blockSize = downloadableFile.getRestSize();
 				}
-
+				if (downloadableFile.getPeer() == null) {
+					Communicator.searchPeerForBlock(downloadableFile, curBlock,
+							blockSize);
+				}
 				byte[] result = Communicator.GetBlockFromPeer(downloadableFile,
 						curBlock, blockSize);
 
