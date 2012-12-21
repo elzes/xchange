@@ -165,6 +165,9 @@ public class Communicator {
 		while (n < 1) {
 			n = bufferedInputStream.read(byteArray, 0, size);
 		}
+		if (Settings.DEBUG) {
+			System.out.println(new String(byteArray));
+		}
 
 		return byteArray;
 	}

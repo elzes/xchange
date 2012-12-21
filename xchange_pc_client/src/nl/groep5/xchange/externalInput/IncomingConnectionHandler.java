@@ -75,12 +75,31 @@ public class IncomingConnectionHandler extends Thread {
 	private void handleGet(String substring) {
 		String[] command = substring.split(Settings.getSplitCharRegEx());
 		String fileName = command[0];
+		int blockNr = Integer.parseInt(command[command.length - 1]);
 
 		File file = new File(Settings.getSharedFolder() + fileName);
 		if (!file.exists()) {
-			handleError();
+
+			file = new File(Settings.getSharedFolder() + fileName
+					+ Settings.getTmpExtension());
+			if (!file.exists()) {
+				handleError();
+				return;
+			}
+			try {
+				RandomAccessFile randomAccessFileStatus = new RandomAccessFile(
+						Settings.getInfoFolder() + fileName
+								+ Settings.getInfoExtension(), "r");
+				randomAccessFileStatus.seek(blockNr);
+				if (randomAccessFileStatus.readByte() == '0') {
+					handleError();
+					return;
+				}
+			} catch (IOException e) {
+				handleError();
+				return;
+			}
 		}
-		int blockNr = Integer.parseInt(command[command.length - 1]);
 
 		try {
 			RandomAccessFile randomAccessFile = new RandomAccessFile(file, "r");
@@ -91,12 +110,12 @@ public class IncomingConnectionHandler extends Thread {
 
 			bufferedOutputStream.write(content);
 			bufferedOutputStream.flush();
+			return;
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
 	}
 
 	private void handleSearch(final String pattern) {
