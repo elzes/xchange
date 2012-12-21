@@ -33,7 +33,7 @@ public class Settings implements Serializable {
 
 	public static final boolean DEBUG = true;
 
-	private static final String SPLIT_CHAR = "|";
+	private static final String SPLIT_CHAR = "\\|";
 
 	public String getNameServerIp() {
 		return nameServerIP;

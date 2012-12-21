@@ -7,6 +7,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.Arrays;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -107,7 +108,10 @@ public class Communicator {
 		if (line.startsWith("FAIL"))
 			throw new IOException();
 
+		System.out.println("Line :" + line);
+		System.out.println("SPLIT CHAR " + Settings.getSplitChar());
 		String[] result = line.split(Settings.getSplitChar());
+		System.out.println("RESULT: " + Arrays.toString(result));
 
 		if (result.length % 2 == 0) {
 			for (int i = 0; i < result.length; i += 2) {
