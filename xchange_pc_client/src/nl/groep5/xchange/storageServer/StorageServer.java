@@ -91,6 +91,9 @@ public class StorageServer {
 			line = in.readLine();
 		} while (line == null);
 
+		if (line.equals("IS STORAGE SERVER")) {
+			out.println("OK");
+		}
 		if (line.startsWith("POST")) {
 			handlePost(line);
 		}

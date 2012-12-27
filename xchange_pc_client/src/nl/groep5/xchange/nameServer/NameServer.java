@@ -70,13 +70,7 @@ public class NameServer {
 		}
 	}
 
-	public void handleRemove(String line, PrintWriter out) throws Exception {
-		String[] s = line.split(" ");
-		if (s.length != 2) {
-			handleError(out);
-			return;
-		}
-		String ip = s[1];
+	public void handleRemove(String ip, PrintWriter out) throws Exception {
 		synchronized (list) {
 			list.remove(ip);
 		}

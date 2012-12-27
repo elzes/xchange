@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -100,7 +101,7 @@ public class MainController extends AnchorPane implements Initializable {
 
 	@FXML
 	protected void ExitClick(ActionEvent event) {
-		System.exit(0);
+		Platform.exit();
 	}
 
 	@FXML

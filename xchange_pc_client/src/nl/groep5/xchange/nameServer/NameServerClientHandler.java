@@ -52,7 +52,7 @@ public class NameServerClientHandler extends Thread {
 		}
 
 		else if (line.startsWith("REMOVE")) {
-			nameServer.handleRemove(line, out);
+			nameServer.handleRemove(externalIp, out);
 		}
 
 		else if (line.startsWith("LIST")) {
