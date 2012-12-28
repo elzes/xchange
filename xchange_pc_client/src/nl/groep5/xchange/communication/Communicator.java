@@ -194,7 +194,10 @@ public class Communicator {
 
 	public static boolean setRouterSettings() {
 		try {
-			String result = router.sendCommand("IS ROUTER");
+			String result = router.sendCommand("SET SETTINGS "
+					+ Settings.getInstance().getNameServerIp()
+					+ Settings.getSplitChar()
+					+ Settings.getInstance().getStorageServerIp());
 			if (result.equals("ok"))
 				return true;
 		} catch (CommunicationException | IOException e) {
@@ -213,6 +216,9 @@ public class Communicator {
 		command = command.substring(0, command.length() - 1);
 
 		try {
+			if (Settings.DEBUG) {
+				System.out.println(command);
+			}
 			String answer = router.sendCommand(command);
 			if (answer.startsWith("OK"))
 				return true;
