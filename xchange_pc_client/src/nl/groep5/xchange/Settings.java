@@ -27,6 +27,9 @@ public class Settings implements Serializable {
 	private String storageServerIP;
 	private static int storageServerPort = 9002;
 	private String nameServerIP;
+
+	private State state;
+
 	private static int nameServerPort = 9001;
 
 	private static Settings instance;
@@ -162,5 +165,13 @@ public class Settings implements Serializable {
 
 	public static String getListStopSign() {
 		return LIST_STOP_SIGN;
+	}
+
+	public void setState(State state) {
+		this.state = state;
+	}
+
+	public State getState() {
+		return state;
 	}
 }

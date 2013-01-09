@@ -1,5 +1,6 @@
 package nl.groep5.xchange;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.ConnectException;
@@ -9,6 +10,7 @@ import java.util.logging.Logger;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
@@ -16,6 +18,9 @@ import javafx.fxml.Initializable;
 import javafx.fxml.JavaFXBuilderFactory;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.VBoxBuilder;
+import javafx.scene.text.Text;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import nl.groep5.xchange.communication.Communicator;
@@ -45,12 +50,14 @@ public class Main extends Application {
 	 *            the command line arguments
 	 */
 	public static void main(String[] args) {
-		Application.launch(Main.class, (java.lang.String[]) null);
+		Application.launch(Main.class, (String[]) null);
 	}
 
 	@Override
 	public void start(Stage primaryStage) {
 		try {
+			createDirectorys();
+
 			stage = primaryStage;
 			stage.setTitle("XChange application");
 			stage.setMinWidth(MINIMUM_WINDOW_WIDTH);
@@ -66,14 +73,33 @@ public class Main extends Application {
 				}
 			}
 			if (Settings.getInstance().validate()) {
+				if (Settings.getInstance().getState() == null) {
+					Main.state = State.LOCAL_STOP;
+				} else {
+					Main.state = Settings.getInstance().getState();
+				}
+				System.out.println("STATE " + Main.state.toString());
 				gotoMain();
 			} else {
+				Main.state = State.NO_SETTINGS;
 				gotoSettings();
 			}
 			primaryStage.show();
 			initSytem();
 		} catch (Exception ex) {
 			ex.printStackTrace();
+		}
+	}
+
+	private void createDirectorys() {
+		File directory = new File(Settings.getSharedFolder());
+		if (!directory.exists()) {
+			directory.mkdirs();
+		}
+
+		directory = new File(Settings.getInfoFolder());
+		if (!directory.exists()) {
+			directory.mkdirs();
 		}
 	}
 
@@ -88,7 +114,15 @@ public class Main extends Application {
 
 					@Override
 					public void handle(ActionEvent event) {
-						Communicator.updatePeers();
+						if (!Communicator.updatePeers()) {
+							Platform.runLater(new Runnable() {
+
+								@Override
+								public void run() {
+									Main.showDialog("Could not connect to the nameserver");
+								}
+							});
+						}
 					}
 				}));
 		peerUpdater.setCycleCount(Timeline.INDEFINITE);
@@ -148,5 +182,13 @@ public class Main extends Application {
 		DownloadController.stopDownloads();
 		Communicator.unregisterFromNameServer();
 		super.stop();
+	}
+
+	public static void showDialog(String message) {
+		final Stage dialogStage = new Stage();
+		dialogStage.initModality(Modality.WINDOW_MODAL);
+		dialogStage.setScene(new Scene(VBoxBuilder.create()
+				.children(new Text(message)).build()));
+		dialogStage.show();
 	}
 }

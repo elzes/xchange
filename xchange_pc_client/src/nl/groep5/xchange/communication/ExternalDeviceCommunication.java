@@ -27,6 +27,9 @@ public class ExternalDeviceCommunication {
 	public String sendCommand(String command) throws UnknownHostException,
 			IOException, ConnectException, CommunicationException {
 
+		if (ip == null)
+			throw new CommunicationException("Ip is null");
+
 		try {
 			Socket socket = new Socket();
 			socket.connect(new InetSocketAddress(ip, port),
@@ -47,6 +50,15 @@ public class ExternalDeviceCommunication {
 				line = bufferedReader.readLine();
 			} while (line == null);
 
+			printWriter.close();
+			bufferedReader.close();
+			socket.close();
+
+			if (Settings.DEBUG) {
+				System.out.println("Response from " + this.getClass().getName()
+						+ " " + line);
+			}
+
 			if (line.startsWith("FAIL"))
 				throw new CommunicationException();
 
@@ -57,6 +69,10 @@ public class ExternalDeviceCommunication {
 
 			return line;
 		} catch (ConnectException e) {
+			if (Settings.DEBUG) {
+				System.out.println("ConnectException "
+						+ this.getClass().getName() + " command:  " + command);
+			}
 			throw new UnknownHostException();
 		}
 	}

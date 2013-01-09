@@ -7,16 +7,12 @@ import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.VBoxBuilder;
-import javafx.scene.text.Text;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
 import nl.groep5.xchange.Main;
 import nl.groep5.xchange.Settings;
+import nl.groep5.xchange.State;
 
 public class SettingsController extends AnchorPane implements Initializable {
 
@@ -52,13 +48,13 @@ public class SettingsController extends AnchorPane implements Initializable {
 		settings.setRouterIp(routerIP.getText());
 		try {
 			if (!settings.validate()) {
-				final Stage dialogStage = new Stage();
-				dialogStage.initModality(Modality.WINDOW_MODAL);
-				dialogStage.setScene(new Scene(VBoxBuilder.create()
-						.children(new Text("Invalid settings")).build()));
-				dialogStage.show();
+				Main.showDialog("Setting not valid");
 			} else {
 				settings.save();
+				if (Main.state == null || Main.state == State.NO_SETTINGS) {
+					Main.state = State.LOCAL_STOP;
+					MainController.processStateChange();
+				}
 				application.closeSettings();
 			}
 		} catch (IOException e) {

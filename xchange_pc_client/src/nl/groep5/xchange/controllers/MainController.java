@@ -1,10 +1,11 @@
 package nl.groep5.xchange.controllers;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
+import java.util.List;
 import java.util.ResourceBundle;
 
 import javafx.application.Platform;
@@ -14,10 +15,9 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.MenuItem;
 import javafx.scene.layout.AnchorPane;
-
-import javax.swing.JFileChooser;
-
+import javafx.stage.FileChooser;
 import nl.groep5.xchange.Main;
+import nl.groep5.xchange.Settings;
 import nl.groep5.xchange.State;
 import nl.groep5.xchange.communication.Communicator;
 
@@ -26,19 +26,19 @@ public class MainController extends AnchorPane implements Initializable {
 	@FXML
 	Button buttonSettings;
 	@FXML
-	MenuItem settings;
+	static MenuItem settings;
 	@FXML
-	MenuItem shareFile;
+	static MenuItem shareFile;
 	@FXML
 	MenuItem exit;
 	@FXML
-	MenuItem startPC;
+	static MenuItem startPC;
 	@FXML
-	MenuItem stopPC;
+	static MenuItem stopPC;
 	@FXML
-	MenuItem startRouter;
+	static MenuItem startRouter;
 	@FXML
-	MenuItem stopRouter;
+	static MenuItem stopRouter;
 
 	private Main application;
 
@@ -48,7 +48,7 @@ public class MainController extends AnchorPane implements Initializable {
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-
+		processStateChange();
 	}
 
 	@FXML
@@ -58,45 +58,24 @@ public class MainController extends AnchorPane implements Initializable {
 
 	@FXML
 	protected void ShareFileClick(ActionEvent event) {
-		try {
-			JFileChooser jfc = new JFileChooser(".");
-			jfc.setDialogTitle("Add a file to be shared");
-			jfc.setApproveButtonText("Share");
 
-			if (jfc.showOpenDialog(jfc) == JFileChooser.APPROVE_OPTION) {
-				File fSelected = jfc.getSelectedFile();
-				if (fSelected == null) {
-					return;
-				} else {
-					File fi = fSelected;
-					File fo = new File("xchange/shared/" + fSelected.getName());
+		FileChooser fileChooser = new FileChooser();
+		fileChooser.setTitle("Add a file to be shared");
+		List<File> selectedFiles = fileChooser.showOpenMultipleDialog(null);
 
-					try {
-						FileInputStream fis = new FileInputStream(fi);
-						FileOutputStream fos = new FileOutputStream(fo);
-
-						// Define the size of our buffer for buffering file data
-						byte[] buffer = new byte[4096];
-						// each time read and write up to buffer.length bytes
-						// read counts nr of bytes available
-						int read;
-						while ((read = fis.read(buffer)) != -1) {
-							fos.write(buffer, 0, read);
-						}
-						// Finally close the input and output stream after we've
-						// finished with them.
-						fis.close();
-						fos.close();
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
+		if (selectedFiles != null) {
+			for (File file : selectedFiles) {
+				File newFile = new File(Settings.getSharedFolder()
+						+ file.getName());
+				try {
+					Files.copy(file.toPath(), newFile.toPath(),
+							StandardCopyOption.REPLACE_EXISTING);
+				} catch (IOException e) {
+					e.printStackTrace();
 				}
 			}
 		}
 
-		catch (Exception e) {
-			e.printStackTrace();
-		}
 	}
 
 	@FXML
@@ -128,7 +107,18 @@ public class MainController extends AnchorPane implements Initializable {
 		processStateChange();
 	}
 
-	public void processStateChange() {
+	public static void processStateChange() {
+
+		try {
+			Settings.getInstance().save();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		if (settings == null || shareFile == null || startPC == null
+				|| stopPC == null || startRouter == null || stopRouter == null)
+			return;
+
 		switch (Main.state) {
 		case NO_SETTINGS:
 			settings.setDisable(false);
@@ -137,6 +127,7 @@ public class MainController extends AnchorPane implements Initializable {
 			stopPC.setDisable(true);
 			startRouter.setDisable(true);
 			stopRouter.setDisable(true);
+			Settings.getInstance().setState(Main.state);
 			break;
 		case WITH_SETTINGS:
 			settings.setDisable(false);
@@ -145,6 +136,7 @@ public class MainController extends AnchorPane implements Initializable {
 			stopPC.setDisable(true);
 			startRouter.setDisable(false);
 			stopRouter.setDisable(true);
+			Settings.getInstance().setState(Main.state);
 			break;
 		case LOCAL_START:
 			settings.setDisable(true);
@@ -154,6 +146,7 @@ public class MainController extends AnchorPane implements Initializable {
 			startRouter.setDisable(true);
 			stopRouter.setDisable(true);
 			DownloadController.startDownloads();
+			Settings.getInstance().setState(Main.state);
 			break;
 		case LOCAL_STOP:
 			settings.setDisable(false);
@@ -163,25 +156,40 @@ public class MainController extends AnchorPane implements Initializable {
 			startRouter.setDisable(false);
 			stopRouter.setDisable(true);
 			DownloadController.stopDownloads();
+			Settings.getInstance().setState(Main.state);
 			break;
 		case ROUTER_START:
-			settings.setDisable(true);
-			shareFile.setDisable(true);
-			startPC.setDisable(true);
-			stopPC.setDisable(true);
-			startRouter.setDisable(true);
-			stopRouter.setDisable(false);
-			Communicator.startRouterDownload();
+			if (Communicator.startRouterDownload()) {
+				settings.setDisable(true);
+				shareFile.setDisable(true);
+				startPC.setDisable(true);
+				stopPC.setDisable(true);
+				startRouter.setDisable(true);
+				stopRouter.setDisable(false);
+				Settings.getInstance().setState(Main.state);
+			} else {
+				Main.showDialog("Could not start router download");
+			}
 			break;
 		case ROUTER_STOP:
-			settings.setDisable(false);
-			shareFile.setDisable(false);
-			startPC.setDisable(false);
-			stopPC.setDisable(true);
-			startRouter.setDisable(true);
-			stopRouter.setDisable(true);
-			Communicator.stopRouterDownload();
+			if (Communicator.stopRouterDownload()) {
+				settings.setDisable(false);
+				shareFile.setDisable(false);
+				startPC.setDisable(true);
+				stopPC.setDisable(true);
+				startRouter.setDisable(true);
+				stopRouter.setDisable(true);
+				Settings.getInstance().setState(Main.state);
+			} else {
+				Main.showDialog("Could not stop router download");
+			}
 			break;
+		}
+
+		try {
+			Settings.getInstance().save();
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 }

@@ -2,6 +2,8 @@ package nl.groep5.xchange.communication;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileFilter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
@@ -17,8 +19,11 @@ import javafx.collections.ObservableList;
 import javax.naming.CommunicationException;
 
 import nl.groep5.xchange.Downloader;
+import nl.groep5.xchange.Main;
 import nl.groep5.xchange.Settings;
+import nl.groep5.xchange.State;
 import nl.groep5.xchange.controllers.DownloadController;
+import nl.groep5.xchange.controllers.MainController;
 import nl.groep5.xchange.models.DownloadableFile;
 import nl.groep5.xchange.models.Peer;
 
@@ -32,8 +37,7 @@ public class Communicator {
 	private static NameServer nameServer = new NameServer(Settings
 			.getInstance().getNameServerIp(), Settings.getNameServerPort());
 
-	private static Router router = new Router(Settings.getInstance()
-			.getRouterIp(), Settings.getRouterPort());
+	private static Router router = Router.getInstance();
 
 	private static StorageServer storageServer = new StorageServer(Settings
 			.getInstance().getStorageServerIp(),
@@ -43,8 +47,7 @@ public class Communicator {
 		nameServer = new NameServer(Settings.getInstance().getNameServerIp(),
 				Settings.getNameServerPort());
 
-		router = new Router(Settings.getInstance().getRouterIp(),
-				Settings.getRouterPort());
+		Router.getInstance().resetSettings();
 
 		storageServer = new StorageServer(Settings.getInstance()
 				.getStorageServerIp(), Settings.getStorageServerPort());
@@ -74,22 +77,27 @@ public class Communicator {
 		return false;
 	}
 
-	public static void updatePeers() {
+	public static boolean updatePeers() {
 		try {
 			String result = nameServer.sendCommand("LIST");
 			peers.clear();
 			for (String s : result.split(Settings.getSplitCharRegEx())) {
 				peers.add(new Peer(s));
 			}
+
 		} catch (IOException e) {
 			if (Settings.DEBUG) {
 				System.out.println("Failed to update peerlist.");
 			}
+			return false;
 		} catch (CommunicationException e) {
 			if (Settings.DEBUG) {
-				System.out.println("Failed to update peerlist. Server error.");
+				System.out.println("Failed to update peerlist. Server error."
+						+ e.getMessage());
 			}
+			return false;
 		}
+		return true;
 	}
 
 	public static ObservableList<DownloadableFile> search(String pattern) {
@@ -130,9 +138,22 @@ public class Communicator {
 
 		if (result.length % 2 == 0) {
 			for (int i = 0; i < result.length; i += 2) {
+				final String fileName = result[i];
+				File[] foundFiles = new File(Settings.getSharedFolder())
+						.listFiles(new FileFilter() {
+
+							@Override
+							public boolean accept(File file) {
+								return file.getName().toLowerCase()
+										.equals(fileName.toLowerCase());
+							}
+						});
+				// skip file if local exists
+				if (foundFiles.length > 0)
+					continue;
 
 				final DownloadableFile downloadableFile = new DownloadableFile(
-						result[i], result[i + 1], peer);
+						fileName, result[i + 1], peer);
 
 				searchResults.add(downloadableFile);
 			}
@@ -193,22 +214,21 @@ public class Communicator {
 	}
 
 	public static boolean setRouterSettings() {
-		try {
-			String result = router.sendCommand("SET SETTINGS "
-					+ Settings.getInstance().getNameServerIp()
-					+ Settings.getSplitChar()
-					+ Settings.getInstance().getStorageServerIp());
-			if (result.equals("ok"))
-				return true;
-		} catch (CommunicationException | IOException e) {
-			e.printStackTrace();
-		}
-		// TODO change to false
-		return true;
+		return true;/*
+					 * TODO try { String result = router.sendCommand("SET" +
+					 * Settings.getSplitChar() +
+					 * Settings.getInstance().getNameServerIp() +
+					 * Settings.getSplitChar() +
+					 * Settings.getInstance().getStorageServerIp()); if
+					 * (result.equals("OK")) return true; } catch
+					 * (CommunicationException | IOException e) {
+					 * e.printStackTrace(); } // TODO change to false return
+					 * true;
+					 */
 	}
 
 	public static boolean startRouterDownload() {
-		String command = "START ";
+		String command = "START" + Settings.getSplitChar();
 		for (DownloadableFile downloadableFile : DownloadController.pendingDownloads) {
 			command += downloadableFile.getRouterCommand();
 			command += Settings.getSplitChar();
@@ -225,26 +245,31 @@ public class Communicator {
 
 		} catch (CommunicationException | IOException e) {
 			e.printStackTrace();
+			return false;
 		}
-
 		return false;
 	}
 
-	public static void stopRouterDownload() {
+	public static boolean stopRouterDownload() {
 		try {
 			String answer = router.sendCommand("STOP");
 			if (!answer.startsWith("OK"))
-				return;
+				return false;
 
 			answer = answer.substring("OK ".length());
 			String[] downloadedFiles = answer.split(Settings.getListStopSign()
 					+ Settings.getListStartSign());
 			System.out.println("router answer " + answer);
 			mergeRouterDownload(downloadedFiles);
-
+			Main.state = State.LOCAL_STOP;
+			MainController.processStateChange();
 		} catch (CommunicationException | IOException e) {
 			e.printStackTrace();
+			Main.state = State.LOCAL_STOP;
+			MainController.processStateChange();
+			return false;
 		}
+		return true;
 	}
 
 	private static void mergeRouterDownload(String[] downloadedFiles) {
@@ -280,14 +305,16 @@ public class Communicator {
 
 			} catch (IOException e) {
 				e.printStackTrace();
+			} finally {
+				Main.state = State.LOCAL_STOP;
+				MainController.processStateChange();
 			}
-
 		}
 	}
 
 	private static void mergeRemoteDownloadedBlocks(
 			DownloadableFile downloadableFile,
-			ArrayList<Integer> remoteDownloadedBlocks) {
+			ArrayList<Integer> remoteDownloadedBlocks) throws IOException {
 
 		try {
 			RandomAccessFile statusFile = new RandomAccessFile(
@@ -322,8 +349,10 @@ public class Communicator {
 			targetFile.close();
 		} catch (IOException e) {
 			e.printStackTrace();
+			throw new IOException();
 		} catch (CommunicationException e) {
 			e.printStackTrace();
+			throw new IOException();
 		}
 	}
 
