@@ -10,7 +10,7 @@ public class StorageServerPostCommand extends StorageServerCommand {
 
 		int fileSize;
 		try {
-			fileSize = Integer.parseInt(command[command.length - 4]);
+			fileSize = Integer.parseInt(command[2]);
 
 		} catch (NumberFormatException e) {
 			new InvalidCommandException("Invalid filesize");
@@ -20,7 +20,7 @@ public class StorageServerPostCommand extends StorageServerCommand {
 
 		int blockNr;
 		try {
-			blockNr = Integer.parseInt(command[command.length - 3]);
+			blockNr = Integer.parseInt(command[3]);
 		} catch (NumberFormatException e) {
 			new InvalidCommandException("Invalid blocknr");
 			return;
@@ -28,7 +28,7 @@ public class StorageServerPostCommand extends StorageServerCommand {
 
 		setBlockNr(blockNr);
 
-		String bytesToWrite = command[command.length - 1];
+		String bytesToWrite = command[4];
 		setBitesToWrite(bytesToWrite.getBytes());
 	}
 
@@ -59,10 +59,5 @@ public class StorageServerPostCommand extends StorageServerCommand {
 	@Override
 	protected int getMinCommandLength() {
 		return 5;
-	}
-
-	@Override
-	protected int getCommandCountAfterFileName() {
-		return 3;
 	}
 }

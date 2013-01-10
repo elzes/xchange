@@ -223,8 +223,8 @@ public class Communicator {
 				return true;
 		} catch (CommunicationException | IOException e) {
 			e.printStackTrace();
-		}
-		return false;
+		}//TODO change to false
+		return true;
 
 	}
 
