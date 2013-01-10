@@ -1,9 +1,10 @@
 package nl.groep5.xchange.communication;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import java.io.OutputStreamWriter;
 import java.net.ConnectException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
@@ -17,9 +18,10 @@ public class Router {
 
 	protected static final int SOCKET_TIMEOUT = 5;
 	private static Router instance;
+	private static int count = 0;
 	private Socket socket;
 	private BufferedReader bufferedReader;
-	private PrintWriter printWriter;
+	private BufferedWriter bufferedWriter;
 
 	private Router() {
 		resetSettings();
@@ -27,7 +29,6 @@ public class Router {
 
 	public static Router getInstance() {
 		if (instance == null) {
-			Settings.getInstance();
 			instance = new Router();
 		}
 
@@ -35,17 +36,25 @@ public class Router {
 	}
 
 	public void resetSettings() {
-		return;/*TODO
 		System.out.println("reset router settings.");
+		Router.count++;
+		if (count > 10) {
+			try {
+				throw new Exception();
+			} catch (Exception e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		}
+
 		try {
-			if (socket != null) {
-				return;
-			}
-			if (socket != null) {
+
+			if (bufferedReader != null)
 				bufferedReader.close();
-				printWriter.close();
+			if (bufferedWriter != null)
+				bufferedWriter.close();
+			if (socket != null)
 				socket.close();
-			}
 
 			socket = new Socket();
 			socket.connect(new InetSocketAddress(Settings.getInstance()
@@ -54,25 +63,27 @@ public class Router {
 			bufferedReader = new BufferedReader(new InputStreamReader(
 					socket.getInputStream()));
 
-			printWriter = new PrintWriter(socket.getOutputStream(), true);
+			bufferedWriter = new BufferedWriter(new OutputStreamWriter(
+					socket.getOutputStream()));
 		} catch (IOException e) {
 			e.printStackTrace();
-		}*/
+		}
+
 	}
 
 	public String sendCommand(String command) throws UnknownHostException,
 			IOException, ConnectException, CommunicationException {
 
-		if (socket == null || printWriter == null || bufferedReader == null) {
+		if (socket == null || bufferedWriter == null || bufferedReader == null) {
 			throw new CommunicationException();
 		}
-		
+
 		try {
 			if (Settings.DEBUG) {
 				System.out.println("Going to write to "
 						+ this.getClass().getName() + " command: " + command);
 			}
-			printWriter.println(command);
+			bufferedWriter.write(command.toCharArray());
 
 			System.out.println("Command sended");
 			String line = null;
