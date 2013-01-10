@@ -45,13 +45,15 @@ public class SettingsController extends AnchorPane implements Initializable {
 	@FXML
 	protected void saveClick(ActionEvent actionEvent) {
 		Settings settings = Settings.getInstance();
-		settings.setNameServerIp(nameServerIP.getText());
-		settings.setStorageServerIp(storageServerIP.getText());
-		settings.setRouterIp(routerIP.getText());
 		try {
-			if (!settings.validate()) {
-				Main.showDialog("Setting not valid");
+			if (fieldsAreEmpty()) {
+				Main.showDialog("One or more fields are empty!");
+			} else if (!settings.validate()) {
+				Main.showDialog("Settings not valid");
 			} else {
+				settings.setNameServerIp(nameServerIP.getText());
+				settings.setStorageServerIp(storageServerIP.getText());
+				settings.setRouterIp(routerIP.getText());
 				settings.save();
 				Router.getInstance().resetSettings();
 				Communicator.setRouterSettings();
@@ -64,6 +66,15 @@ public class SettingsController extends AnchorPane implements Initializable {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+
+	private boolean fieldsAreEmpty() {
+		if (nameServerIP.getText().equals("") ||
+				storageServerIP.getText().equals("") ||
+				routerIP.getText().equals(""))
+			return true;
+		else
+			return false;
 	}
 
 	@FXML

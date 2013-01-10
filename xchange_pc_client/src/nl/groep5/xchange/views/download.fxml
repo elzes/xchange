@@ -8,22 +8,14 @@
 <?import javafx.scene.paint.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane id="Content" minHeight="0.0" minWidth="0.0"
-	prefHeight="180.0" prefWidth="640.0" xmlns:fx="http://javafx.com/fxml"
-	fx:controller="nl.groep5.xchange.controllers.DownloadController">
-	<children>
-		<TableView fx:id="downloads" prefHeight="321.0" prefWidth="640.0"
-			tableMenuButtonVisible="false" AnchorPane.bottomAnchor="0.0"
-			AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
-			AnchorPane.topAnchor="24.0">
-			<columns>
-				<TableColumn maxWidth="370.0" minWidth="350.0"
-					prefWidth="350.0" text="Filename" fx:id="fileName" />
-				<TableColumn maxWidth="140.0" minWidth="100.0"
-					prefWidth="120.0" text="Size in bytes" fx:id="fileSize" />
-				<TableColumn maxWidth="190.0" minWidth="150.0"
-					prefWidth="168.0" text="Progress" fx:id="progress" />
-			</columns>
-		</TableView>
-	</children>
+<AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="640.0" xmlns:fx="http://javafx.com/fxml" fx:controller="nl.groep5.xchange.controllers.DownloadController">
+  <children>
+    <TableView fx:id="downloads" prefHeight="180.0" prefWidth="640.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <columns>
+        <TableColumn maxWidth="370.0" minWidth="350.0" prefWidth="350.0" text="Filename" fx:id="fileName" />
+        <TableColumn maxWidth="140.0" minWidth="100.0" prefWidth="120.0" text="Size in bytes" fx:id="fileSize" />
+        <TableColumn maxWidth="190.0" minWidth="150.0" prefWidth="168.0" text="Progress" fx:id="progress" />
+      </columns>
+    </TableView>
+  </children>
 </AnchorPane>

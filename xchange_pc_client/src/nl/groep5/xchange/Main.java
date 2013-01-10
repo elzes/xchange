@@ -16,13 +16,18 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.fxml.JavaFXBuilderFactory;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.Group;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBoxBuilder;
 import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import javafx.util.Duration;
 import nl.groep5.xchange.communication.Communicator;
 import nl.groep5.xchange.controllers.DownloadController;
@@ -187,10 +192,25 @@ public class Main extends Application {
 	}
 
 	public static void showDialog(String message) {
-		final Stage dialogStage = new Stage();
-		dialogStage.initModality(Modality.WINDOW_MODAL);
-		dialogStage.setScene(new Scene(VBoxBuilder.create()
-				.children(new Text(message)).build()));
-		dialogStage.show();
+		final Stage dialog = new Stage();
+		dialog.initStyle(StageStyle.UTILITY);
+		Button okButton = new Button("Close");
+        okButton.setOnAction(new EventHandler<ActionEvent>(){
+            @Override
+            public void handle(ActionEvent arg0) {
+                dialog.close();
+            }
+          
+        });
+		Scene scene = new Scene(VBoxBuilder.create()
+				.children(new Text(message), okButton)
+				.alignment(Pos.CENTER)
+				.spacing(6)
+                .padding(new Insets(5))
+                .build());
+		dialog.setTitle("Warning!");
+		dialog.setScene(scene);
+		dialog.centerOnScreen();
+		dialog.show();
 	}
 }
