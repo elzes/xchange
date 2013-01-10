@@ -27,6 +27,9 @@ public class Settings implements Serializable {
 	private String storageServerIP;
 	private static int storageServerPort = 9002;
 	private String nameServerIP;
+
+	private State state;
+
 	private static int nameServerPort = 9001;
 
 	private static Settings instance;
@@ -35,6 +38,10 @@ public class Settings implements Serializable {
 
 	private static final String SPLIT_CHAR = "|";
 	private static final String SPLIT_CHAR_REG_EX = "\\" + SPLIT_CHAR;
+
+	private static final String LIST_START_SIGN = "<";
+
+	private static final String LIST_STOP_SIGN = ">";
 
 	public String getNameServerIp() {
 		return nameServerIP;
@@ -150,5 +157,21 @@ public class Settings implements Serializable {
 
 	public static String getSplitCharRegEx() {
 		return SPLIT_CHAR_REG_EX;
+	}
+
+	public static String getListStartSign() {
+		return LIST_START_SIGN;
+	}
+
+	public static String getListStopSign() {
+		return LIST_STOP_SIGN;
+	}
+
+	public void setState(State state) {
+		this.state = state;
+	}
+
+	public State getState() {
+		return state;
 	}
 }

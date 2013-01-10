@@ -50,7 +50,7 @@ public class Downloader extends Thread {
 				} else {
 					blockSize = downloadableFile.getRestSize();
 				}
-				if (downloadableFile.getPeer() == null) {
+				while(downloadableFile.getPeer() == null) {
 					Communicator.searchPeerForBlock(downloadableFile, curBlock,
 							blockSize);
 				}

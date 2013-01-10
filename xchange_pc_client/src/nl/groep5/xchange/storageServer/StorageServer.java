@@ -40,10 +40,7 @@ public class StorageServer {
 		// check if ./files directory exists
 		File file = new File(STORAGE_DIR);
 		if (!file.exists()) {
-			System.out
-					.println("Please create directory ./files with r+w access.");
-			System.err.println("ERROR : directory ./files does not exist.");
-			System.exit(0);
+			file.mkdirs();
 		}
 
 		try {
@@ -62,7 +59,6 @@ public class StorageServer {
 		ServerSocket ss = new ServerSocket(port);
 
 		// listen for incoming connections
-
 		while (true) {
 			Socket cs = ss.accept();
 			// handle a single request
@@ -91,6 +87,9 @@ public class StorageServer {
 			line = in.readLine();
 		} while (line == null);
 
+		if (line.equals("IS STORAGE SERVER")) {
+			out.println("OK");
+		}
 		if (line.startsWith("POST")) {
 			handlePost(line);
 		}
@@ -106,6 +105,7 @@ public class StorageServer {
 		else {
 			handleError();
 		}
+		s.close();
 	}
 
 	private void handlePost(String line) {

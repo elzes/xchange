@@ -34,7 +34,7 @@ public class DownloadController extends Control implements Initializable {
 	@FXML
 	TableColumn<DownloadableFile, ProgressBar> progress;
 
-	private static ObservableList<DownloadableFile> pendingDownloads = FXCollections
+	public static ObservableList<DownloadableFile> pendingDownloads = FXCollections
 			.observableArrayList();
 
 	public static void addDownload(DownloadableFile downloadableFile) {

@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.util.ArrayList;
 
 import javafx.scene.control.ProgressBar;
 import nl.groep5.xchange.Downloader;
@@ -164,5 +165,49 @@ public class DownloadableFile {
 
 	public void setPeer(Peer peer) {
 		this.peer = peer;
+	}
+
+	public String getRouterCommand() {
+		ArrayList<String> commandArgs = new ArrayList<String>();
+		commandArgs.add(getRealFileName());
+		commandArgs.add("" + getFileSize());
+		commandArgs.add("" + getNoOfBlocks());
+		File statusFile;
+		try {
+			statusFile = getDownloadStatusFile();
+
+			if (statusFile == null)
+				return "";
+
+			RandomAccessFile randomAccesStatus = new RandomAccessFile(
+					statusFile, "r");
+			byte[] content = new byte[(int) randomAccesStatus.length()];
+			randomAccesStatus.readFully(content, 0, content.length);
+			randomAccesStatus.close();
+			String stringContent = new String(content);
+			commandArgs.add(stringContent);
+
+			if (getPeer() == null) {
+				commandArgs.add(Settings.getListStartSign()
+						+ Settings.getListStopSign());
+			} else {
+				commandArgs.add(Settings.getListStartSign() + getPeer().getIp()
+						+ Settings.getListStopSign());
+			}
+
+			String command = Settings.getListStartSign();
+			for (String s : commandArgs) {
+				command += s + Settings.getSplitChar();
+			}
+			command = command.substring(0, command.length() - 1);// strip last
+																	// split
+																	// char
+			command += Settings.getListStopSign();
+
+			return command;
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return "";
 	}
 }
