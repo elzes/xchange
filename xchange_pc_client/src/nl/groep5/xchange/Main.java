@@ -17,6 +17,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.fxml.JavaFXBuilderFactory;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBoxBuilder;
 import javafx.scene.text.Text;
@@ -59,12 +60,12 @@ public class Main extends Application {
 			createDirectorys();
 
 			stage = primaryStage;
-			stage.setTitle("XChange application");
+			stage.setTitle("XChange");
 			stage.setMinWidth(MINIMUM_WINDOW_WIDTH);
 			stage.setMinHeight(MINIMUM_WINDOW_HEIGHT);
 			stage.setMaxWidth(MAXIMUM_WINDOW_WIDTH);
 			stage.setMaxHeight(MAXIMUM_WINDOW_HEIGHT);
-
+			stage.getIcons().add(new Image("file:icon.png"));
 			try {
 				Settings.getInstance().load();
 			} catch (IOException e) {
