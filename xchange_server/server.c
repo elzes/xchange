@@ -4,6 +4,10 @@
  * 
  * This server is created to run on the Linksys WRT45GL.
  * This application is has to serve as a bittorrent client when the computer is shut down. 
+ *
+ * Some parts were made together with Michael de Vries.
+ * Some code can be duplicate to the code made by Michael. I only used his
+ * code with Michaels permissions. 
  */
 
 #include <stdio.h>
@@ -39,7 +43,7 @@ char message_buffer[BUFFSIZE];
 char store_buffer[BLOCK_SIZE + 50];
 char *message;
 
-int ss, ns, p = 0;
+int ss = 0, ns = 0, p = 0;
 
 struct start {
 	char *filename;
@@ -163,7 +167,8 @@ void handle(int* sPtr) {
 	pthread_t start;
 
 	while(1) {
-		nr_bytes_recv = recv(s, buffer, BUFFSIZE, 0);
+		//nr_bytes_recv = recv(s, buffer, BUFFSIZE, 0);
+		nr_bytes_recv = read(s, buffer, BUFFSIZE);
 		if (nr_bytes_recv > BUFFSIZE) {
 			perror("Buffer too small");
 			//exit(EXIT_FAILURE);
@@ -174,6 +179,7 @@ void handle(int* sPtr) {
 		char *rest; 
         char *token; 
         char *ptr = buffer; 
+        nr = 0;
 
         // loop till strtok_r returns NULL.
         while((token = strtok_r(ptr, "|", &rest))) {
@@ -201,13 +207,13 @@ void handle(int* sPtr) {
 
         	if (rv < 0) {
         		message = "FAIL\n";
-        		rv = send(s, message, nr_bytes_recv,0);
+        		rv = write(s, message, nr_bytes_recv);
 				perror("Error sending");
 				//exit(EXIT_FAILURE);
 			}
 			else {
 				message = "OK\n";
-				rv = send(s, message, nr_bytes_recv,0);
+				rv = write(s, message, 3);
 			}
         	nr = 0;
         }
@@ -239,13 +245,13 @@ void handle(int* sPtr) {
         	printf("--> Start Router Download....\n");
         	if (rv < 0) {
         		message = "FAIL\n";
-        		rv = send(s, message, nr_bytes_recv,0);
+        		rv = write(s, message, nr_bytes_recv);
 				perror("Error sending");
 				//exit(EXIT_FAILURE);
 			}
 			else {
 				message = "OK\n";
-				rv = send(s, message, nr_bytes_recv,0);
+				rv = write(s, message, nr_bytes_recv);
 			}
 			nr = 0;
 
@@ -267,7 +273,7 @@ void handle(int* sPtr) {
 			printf("--> Stop Router Download...\n");
 			if (rv < 0) {
         		message = "FAIL\n";
-        		rv = send(s, message, nr_bytes_recv,0);
+        		rv = write(s, message, nr_bytes_recv);
 				perror("Error sending");
 				//exit(EXIT_FAILURE);
 			}
@@ -290,7 +296,7 @@ void handle(int* sPtr) {
 						strcat(messagebuffer, start_parameters[i].download_info);
 					}
 				}
-				rv = send(s, messagebuffer, BUFFSIZE,0);
+				rv = write(s, messagebuffer, BUFFSIZE);
 			}
 
 			if(start_parameters[0].filename != NULL) {
@@ -321,15 +327,15 @@ void handle_storage_server(int s) {
 	int nr_bytes_recv = 0;
 
 	while (!nr_bytes_recv) {
-		char *list = "READY?\n";
-		rv = send(s, list, strlen(list), 0);
+		char *list = "IS STORAGE SERVER\n";
+		rv = write(s, list, strlen(list));
 		if (rv < 0) {
 			perror("Error sending");
 			//exit(EXIT_FAILURE);
 		}
 
 		// receive data in buffer
-		nr_bytes_recv = recv(s, buffer, BUFFSIZE, 0);
+		nr_bytes_recv = read(s, buffer, BUFFSIZE);
 
 		if (nr_bytes_recv > BUFFSIZE) {
 			perror("Buffer too small");
@@ -353,14 +359,14 @@ void handle_name_server(int s) {
 
 	while (!nr_bytes_recv) {
 		char *list = "LIST\n";
-		rv = send(s, list, strlen(list), 0);
+		rv = write(s, list, strlen(list));
 		if (rv < 0) {
 			perror("Error sending");
 			//exit(EXIT_FAILURE);
 		}
 
 		// receive data in buffer
-		nr_bytes_recv = recv(s, buffer, BUFFSIZE, 0);
+		nr_bytes_recv = read(s, buffer, BUFFSIZE);
 
 		if (nr_bytes_recv > BUFFSIZE) {
 			perror("Buffer too small");
@@ -418,42 +424,59 @@ void function_start(void) {
 				}
 				else {
 					int rv = 0, nr_bytes_recv = 0;
-					char *data_block = malloc(BLOCK_SIZE + 1);
-					//char *new_download_info = "\0";
 					p = init_outgoing_socket(ip_addresses[j], PEER_PORT);
 					int total = atoi(start_parameters[i].blockcount);
 					int last_block = atoi(start_parameters[i].download_info);
 
 					while(last_block <= total) {
+						sleep(2);
 						sprintf(message_buffer, "GET|%s|%d\n", start_parameters[i].filename, last_block);
-						printf("message_buffer = %s\n", message_buffer);
+						printf("Request to peer = %s\n", message_buffer);
 						rv = send(p, message_buffer, BUFFSIZE, 0);
 						if (rv < 0) {
 							perror("Error sending");
 							//exit(EXIT_FAILURE);
 						}
 
-						// Wait until block is received
-						nr_bytes_recv = recv(p, data_block, BLOCK_SIZE + 1, 0);
-						if (nr_bytes_recv > BLOCK_SIZE) {
-							perror("Buffer too small");
-							//exit(EXIT_FAILURE);
+						char *received;
+						received = malloc(BLOCK_SIZE);
+						while(nr_bytes_recv <= BLOCK_SIZE) {
+							printf("Before receiving: %d\n", nr_bytes_recv);
+							nr_bytes_recv = recv(p, received, BLOCK_SIZE, 0);
+							printf("After receiving: -> %d\n", nr_bytes_recv);
+							if(nr_bytes_recv <= 0) {
+								printf("Break\n");
+								break;
+							}
+							printf("%s \n\n", received);
 						}
-						data_block[nr_bytes_recv]= '\0';
-						printf("%s\n", data_block);
 
-						//POST|filename|filesize|blocknr
-						sprintf(store_buffer, "POST|%s|%s|%d|%s\n", start_parameters[i].filename, start_parameters[i].filesize, last_block, data_block);
-						rv = send(ss, store_buffer, BLOCK_SIZE + 50, 0);
-						//rv = send(ss, message_buffer2, BUFFSIZE, 0);
+						char *file;
+						file = malloc(BLOCK_SIZE + 50);
+						sprintf(file, "POST|%s|%s|%d|%s\n", start_parameters[i].filename, start_parameters[i].filesize, last_block, received);
+						printf("Send to storageserver...\n");
+						rv = send(ss, message_buffer, BUFFSIZE, 0);
+						sleep(5);
 						if (rv < 0) {
 							perror("Error sending");
 							//exit(EXIT_FAILURE);
 						}
 
+						char *reply = malloc(5);
+						nr_bytes_recv = recv(ss, reply, 5, 0);
+						if(nr_bytes_recv < 0) {
+							perror("Error receiving");
+						}
+						printf("Received from storageserver: %s\n", reply);
+
+
+						free(reply);
+						free(received);
+						free(file);
 						last_block++;
-						sprintf(start_parameters[i].download_info, "%d", last_block);
 					}
+					sprintf(start_parameters[i].download_info, "%d", last_block);
+					printf("Download info: %s", start_parameters[i].download_info);
 				}
 			}
 		}
