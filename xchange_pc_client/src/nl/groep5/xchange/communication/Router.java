@@ -17,6 +17,7 @@ public class Router {
 
 	protected static final int SOCKET_TIMEOUT = 5;
 	private static Router instance;
+	private static boolean sended;
 	private Socket socket;
 	private BufferedReader bufferedReader;
 	private PrintWriter printWriter;
@@ -27,7 +28,6 @@ public class Router {
 
 	public static Router getInstance() {
 		if (instance == null) {
-			Settings.getInstance();
 			instance = new Router();
 		}
 
@@ -35,29 +35,29 @@ public class Router {
 	}
 
 	public void resetSettings() {
-		return;/*TODO
 		System.out.println("reset router settings.");
+
 		try {
-			if (socket != null) {
-				return;
-			}
-			if (socket != null) {
+			if (bufferedReader != null)
 				bufferedReader.close();
+			if (printWriter != null)
 				printWriter.close();
+			if (socket != null)
 				socket.close();
-			}
 
 			socket = new Socket();
+
 			socket.connect(new InetSocketAddress(Settings.getInstance()
 					.getRouterIp(), Settings.getRouterPort()),
 					SOCKET_TIMEOUT * 1000);
+
 			bufferedReader = new BufferedReader(new InputStreamReader(
 					socket.getInputStream()));
 
 			printWriter = new PrintWriter(socket.getOutputStream(), true);
 		} catch (IOException e) {
 			e.printStackTrace();
-		}*/
+		}
 	}
 
 	public String sendCommand(String command) throws UnknownHostException,
@@ -66,40 +66,30 @@ public class Router {
 		if (socket == null || printWriter == null || bufferedReader == null) {
 			throw new CommunicationException();
 		}
-		
-		try {
-			if (Settings.DEBUG) {
-				System.out.println("Going to write to "
-						+ this.getClass().getName() + " command: " + command);
-			}
-			printWriter.println(command);
-
-			System.out.println("Command sended");
-			String line = null;
-			do {
-				line = bufferedReader.readLine();
-			} while (line == null);
-
-			if (Settings.DEBUG) {
-				System.out.println("Response from " + this.getClass().getName()
-						+ " " + line);
-			}
-
-			if (line.startsWith("FAIL"))
-				throw new CommunicationException();
-
-			if (Settings.DEBUG) {
-				System.out.println("Done with command " + command
-						+ " to device " + this.getClass().getName());
-			}
-
-			return line;
-		} catch (ConnectException e) {
-			if (Settings.DEBUG) {
-				System.out.println("ConnectException "
-						+ this.getClass().getName() + " command:  " + command);
-			}
-			throw new UnknownHostException();
-		}
+		return "FALSE";
+		/*
+		 * try { if (Settings.DEBUG) { System.out.println("Going to write to " +
+		 * this.getClass().getName() + " command: " + command); } if
+		 * (Router.sended) return "FAIL";
+		 * 
+		 * Router.sended = false; // printWriter.println(command);
+		 * printWriter.write("SET|192.168.1.105|192.168.1.10");
+		 * printWriter.flush(); System.out.println("Command sended");
+		 * 
+		 * String line = null; do { line = bufferedReader.readLine(); } while
+		 * (line == null);
+		 * 
+		 * if (Settings.DEBUG) { System.out.println("Response from " +
+		 * this.getClass().getName() + " " + line); }
+		 * 
+		 * if (line.startsWith("FAIL")) throw new CommunicationException();
+		 * 
+		 * if (Settings.DEBUG) { System.out.println("Done with command " +
+		 * command + " to device " + this.getClass().getName()); }
+		 * 
+		 * return line; } catch (ConnectException e) { if (Settings.DEBUG) {
+		 * System.out.println("ConnectException " + this.getClass().getName() +
+		 * " command:  " + command); } throw new UnknownHostException(); }
+		 */
 	}
 }

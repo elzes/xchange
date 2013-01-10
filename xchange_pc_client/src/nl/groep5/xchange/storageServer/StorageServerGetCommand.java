@@ -8,7 +8,7 @@ public class StorageServerGetCommand extends StorageServerCommand {
 		super(line);
 		int blockNr;
 		try {
-			blockNr = Integer.parseInt(command[command.length - 1]);
+			blockNr = Integer.parseInt(command[2]);
 
 		} catch (NumberFormatException e) {
 			new InvalidCommandException("Invalid filesize");
@@ -23,11 +23,6 @@ public class StorageServerGetCommand extends StorageServerCommand {
 
 	public int getBlockNr() {
 		return blockNr;
-	}
-
-	@Override
-	protected int getCommandCountAfterFileName() {
-		return 1;
 	}
 
 	@Override

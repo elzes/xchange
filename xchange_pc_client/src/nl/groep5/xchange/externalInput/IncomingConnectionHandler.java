@@ -10,13 +10,15 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.RandomAccessFile;
 import java.net.Socket;
+import java.util.Arrays;
 
 import nl.groep5.xchange.Settings;
 
 public class IncomingConnectionHandler extends Thread {
 
-	private static final String SEARCH_COMMAND = "SEARCH ";
-	private static final String GET_COMMAND = "GET ";
+	private static final String SEARCH_COMMAND = "SEARCH"
+			+ Settings.getSplitChar();
+	private static final String GET_COMMAND = "GET" + Settings.getSplitChar();
 	private Socket client;
 	private BufferedReader bufferedReader;
 	private PrintWriter printWriter;
@@ -62,8 +64,10 @@ public class IncomingConnectionHandler extends Thread {
 		}
 
 		if (line.startsWith(SEARCH_COMMAND)) {
+			System.out.println("Search command");
 			handleSearch(line.substring(SEARCH_COMMAND.length()));
 		} else if (line.startsWith(GET_COMMAND)) {
+			System.out.println("Get command");
 			handleGet(line.substring(GET_COMMAND.length()));
 		} else {
 			handleError();
@@ -107,7 +111,7 @@ public class IncomingConnectionHandler extends Thread {
 			byte[] content = new byte[Settings.getBlockSize()];
 			randomAccessFile.read(content, 0, Settings.getBlockSize());
 			randomAccessFile.close();
-
+			System.out.println(Arrays.toString(content));
 			bufferedOutputStream.write(content);
 			bufferedOutputStream.flush();
 			return;

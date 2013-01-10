@@ -8,21 +8,17 @@ public abstract class StorageServerCommand {
 	protected String[] command;
 
 	public StorageServerCommand(String line) throws InvalidCommandException {
+		System.out.println("new command " + line);
 		command = line.split(Settings.getSplitCharRegEx());
 		if (command.length < getMinCommandLength()) {
 			throw new InvalidCommandException("invalid command length");
 		}
 
 		// merge filename if it contains <sp>
-		String fileName = "";
-		for (int i = 1; i <= command.length - getCommandCountAfterFileName(); i++) {
-			fileName += command[i];
-		}
+		String fileName = command[1];
 
 		setFileName(fileName);
 	}
-
-	protected abstract int getCommandCountAfterFileName();
 
 	protected abstract int getMinCommandLength();
 

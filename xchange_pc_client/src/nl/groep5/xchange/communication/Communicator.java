@@ -37,8 +37,6 @@ public class Communicator {
 	private static NameServer nameServer = new NameServer(Settings
 			.getInstance().getNameServerIp(), Settings.getNameServerPort());
 
-	private static Router router = Router.getInstance();
-
 	private static StorageServer storageServer = new StorageServer(Settings
 			.getInstance().getStorageServerIp(),
 			Settings.getStorageServerPort());
@@ -214,17 +212,20 @@ public class Communicator {
 	}
 
 	public static boolean setRouterSettings() {
-		return true;/*
-					 * TODO try { String result = router.sendCommand("SET" +
-					 * Settings.getSplitChar() +
-					 * Settings.getInstance().getNameServerIp() +
-					 * Settings.getSplitChar() +
-					 * Settings.getInstance().getStorageServerIp()); if
-					 * (result.equals("OK")) return true; } catch
-					 * (CommunicationException | IOException e) {
-					 * e.printStackTrace(); } // TODO change to false return
-					 * true;
-					 */
+
+		try {
+			String result = Router.getInstance().sendCommand(
+					"SET" + Settings.getSplitChar()
+							+ Settings.getInstance().getNameServerIp()
+							+ Settings.getSplitChar()
+							+ Settings.getInstance().getStorageServerIp());
+			if (result.equals("OK"))
+				return true;
+		} catch (CommunicationException | IOException e) {
+			e.printStackTrace();
+		}//TODO change to false
+		return true;
+
 	}
 
 	public static boolean startRouterDownload() {
@@ -239,7 +240,7 @@ public class Communicator {
 			if (Settings.DEBUG) {
 				System.out.println(command);
 			}
-			String answer = router.sendCommand(command);
+			String answer = Router.getInstance().sendCommand(command);
 			if (answer.startsWith("OK"))
 				return true;
 
@@ -252,7 +253,7 @@ public class Communicator {
 
 	public static boolean stopRouterDownload() {
 		try {
-			String answer = router.sendCommand("STOP");
+			String answer = Router.getInstance().sendCommand("STOP");
 			if (!answer.startsWith("OK"))
 				return false;
 

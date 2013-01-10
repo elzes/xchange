@@ -13,6 +13,8 @@ import javafx.scene.layout.AnchorPane;
 import nl.groep5.xchange.Main;
 import nl.groep5.xchange.Settings;
 import nl.groep5.xchange.State;
+import nl.groep5.xchange.communication.Communicator;
+import nl.groep5.xchange.communication.Router;
 
 public class SettingsController extends AnchorPane implements Initializable {
 
@@ -61,6 +63,8 @@ public class SettingsController extends AnchorPane implements Initializable {
 				settings.setRouterIp(tempRouterIP);
 			} else {
 				settings.save();
+				Router.getInstance().resetSettings();
+				Communicator.setRouterSettings();
 				if (Main.state == null || Main.state == State.NO_SETTINGS) {
 					Main.state = State.LOCAL_STOP;
 					MainController.processStateChange();

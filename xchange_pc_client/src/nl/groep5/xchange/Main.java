@@ -79,6 +79,7 @@ public class Main extends Application {
 				}
 			}
 			if (Settings.getInstance().validate()) {
+				Communicator.setRouterSettings();
 				if (Settings.getInstance().getState() == null) {
 					Main.state = State.LOCAL_STOP;
 				} else {
