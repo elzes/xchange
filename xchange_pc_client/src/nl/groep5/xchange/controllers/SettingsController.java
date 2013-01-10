@@ -42,16 +42,24 @@ public class SettingsController extends AnchorPane implements Initializable {
 
 	@FXML
 	protected void saveClick(ActionEvent actionEvent) {
+		if (fieldsAreEmpty()) {
+			Main.showDialog("One or more fields are empty!");
+			return;
+		} 
 		Settings settings = Settings.getInstance();
+		String tempNameServerIP = settings.getNameServerIp();
+		String tempStorageServerIP = settings.getStorageServerIp();
+		String tempRouterIP = settings.getRouterIp();
+		settings.setNameServerIp(nameServerIP.getText());
+		settings.setStorageServerIp(storageServerIP.getText());
+		settings.setRouterIp(routerIP.getText());
 		try {
-			if (fieldsAreEmpty()) {
-				Main.showDialog("One or more fields are empty!");
-			} else if (!settings.validate()) {
+			if (!settings.validate()) {
 				Main.showDialog("Settings not valid");
+				settings.setNameServerIp(tempNameServerIP);
+				settings.setStorageServerIp(tempStorageServerIP);
+				settings.setRouterIp(tempRouterIP);
 			} else {
-				settings.setNameServerIp(nameServerIP.getText());
-				settings.setStorageServerIp(storageServerIP.getText());
-				settings.setRouterIp(routerIP.getText());
 				settings.save();
 				if (Main.state == null || Main.state == State.NO_SETTINGS) {
 					Main.state = State.LOCAL_STOP;
