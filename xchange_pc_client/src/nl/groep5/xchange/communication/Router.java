@@ -17,7 +17,6 @@ public class Router {
 
 	protected static final int SOCKET_TIMEOUT = 5;
 	private static Router instance;
-	private static boolean sended;
 	private Socket socket;
 	private BufferedReader bufferedReader;
 	private PrintWriter printWriter;
@@ -45,6 +44,9 @@ public class Router {
 			if (socket != null)
 				socket.close();
 
+			if (Settings.getInstance().getRouterIp() == null)
+				return;
+
 			socket = new Socket();
 
 			socket.connect(new InetSocketAddress(Settings.getInstance()
@@ -66,30 +68,43 @@ public class Router {
 		if (socket == null || printWriter == null || bufferedReader == null) {
 			throw new CommunicationException();
 		}
-		return "FALSE";
-		/*
-		 * try { if (Settings.DEBUG) { System.out.println("Going to write to " +
-		 * this.getClass().getName() + " command: " + command); } if
-		 * (Router.sended) return "FAIL";
-		 * 
-		 * Router.sended = false; // printWriter.println(command);
-		 * printWriter.write("SET|192.168.1.105|192.168.1.10");
-		 * printWriter.flush(); System.out.println("Command sended");
-		 * 
-		 * String line = null; do { line = bufferedReader.readLine(); } while
-		 * (line == null);
-		 * 
-		 * if (Settings.DEBUG) { System.out.println("Response from " +
-		 * this.getClass().getName() + " " + line); }
-		 * 
-		 * if (line.startsWith("FAIL")) throw new CommunicationException();
-		 * 
-		 * if (Settings.DEBUG) { System.out.println("Done with command " +
-		 * command + " to device " + this.getClass().getName()); }
-		 * 
-		 * return line; } catch (ConnectException e) { if (Settings.DEBUG) {
-		 * System.out.println("ConnectException " + this.getClass().getName() +
-		 * " command:  " + command); } throw new UnknownHostException(); }
-		 */
+
+		try {
+			if (Settings.DEBUG) {
+				System.out.println("Going to write to "
+						+ this.getClass().getName() + " command: " + command);
+			}
+
+			printWriter.println(command);
+			System.out.println("Command sended");
+
+			String line = null;
+			do {
+				line = bufferedReader.readLine();
+				System.out.println("LINE " + line);
+			} while (line == null);
+
+			if (Settings.DEBUG) {
+				System.out.println("Response from " + this.getClass().getName()
+						+ " " + line);
+			}
+
+			if (line.startsWith("FAIL"))
+				throw new CommunicationException();
+
+			if (Settings.DEBUG) {
+				System.out.println("Done with command " + command
+						+ " to device " + this.getClass().getName());
+			}
+
+			return line;
+		} catch (ConnectException e) {
+			if (Settings.DEBUG) {
+				System.out.println("ConnectException "
+						+ this.getClass().getName() + " command:  " + command);
+			}
+			throw new UnknownHostException();
+		}
+
 	}
 }

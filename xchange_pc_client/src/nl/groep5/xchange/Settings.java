@@ -124,10 +124,12 @@ public class Settings implements Serializable {
 	}
 
 	public void load() throws IOException, ClassNotFoundException {
+
 		FileInputStream fileIn = new FileInputStream(
 				Settings.getSettingFileLocation());
 		ObjectInputStream in = new ObjectInputStream(fileIn);
 		instance = (Settings) in.readObject();
+
 		in.close();
 		fileIn.close();
 	}

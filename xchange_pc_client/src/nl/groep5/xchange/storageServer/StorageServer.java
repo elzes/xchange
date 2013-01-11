@@ -11,8 +11,6 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 import nl.groep5.xchange.Settings;
-import old.helpers.FileHelper;
-import old.xchange.Debug;
 
 /**
  * This class implements a separate application (server process) handles the
@@ -34,7 +32,7 @@ public class StorageServer {
 	PrintWriter out;
 
 	public StorageServer() {
-		if (Debug.DEBUG) {
+		if (Settings.DEBUG) {
 			System.out.println("Storageserver started ...");
 		}
 		// check if ./files directory exists
@@ -109,7 +107,7 @@ public class StorageServer {
 	}
 
 	private void handlePost(String line) {
-		if (Debug.DEBUG) {
+		if (Settings.DEBUG) {
 			System.out.println("Storageserver received : " + line);
 		}
 
@@ -139,13 +137,13 @@ public class StorageServer {
 			handleError();
 			e.printStackTrace();
 		}
-		if (Debug.DEBUG) {
+		if (Settings.DEBUG) {
 			System.out.println("Storageserver : added block to file");
 		}
 	}
 
 	private void handleGet(String line) {
-		if (Debug.DEBUG) {
+		if (Settings.DEBUG) {
 			System.out.println("Storageserver received : " + line);
 		}
 
@@ -165,13 +163,13 @@ public class StorageServer {
 			e.printStackTrace();
 		}
 
-		if (Debug.DEBUG) {
+		if (Settings.DEBUG) {
 			System.out.println("Storageserver : sent block from file");
 		}
 	}
 
 	private void handleRemove(String line) {
-		if (Debug.DEBUG) {
+		if (Settings.DEBUG) {
 			System.out.println("Storageserver received : " + line);
 		}
 
@@ -189,7 +187,7 @@ public class StorageServer {
 			e.printStackTrace();
 		}
 
-		if (Debug.DEBUG) {
+		if (Settings.DEBUG) {
 			System.out.println("Storageserver : all files removed !");
 		}
 	}

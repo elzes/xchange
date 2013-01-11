@@ -212,19 +212,15 @@ public class Communicator {
 	}
 
 	public static boolean setRouterSettings() {
-
-		try {
-			String result = Router.getInstance().sendCommand(
-					"SET" + Settings.getSplitChar()
-							+ Settings.getInstance().getNameServerIp()
-							+ Settings.getSplitChar()
-							+ Settings.getInstance().getStorageServerIp());
-			if (result.equals("OK"))
-				return true;
-		} catch (CommunicationException | IOException e) {
-			e.printStackTrace();
-		}//TODO change to false
 		return true;
+		/*
+		 * try {//TODO activate if router works String result =
+		 * Router.getInstance().sendCommand( "SET" + Settings.getSplitChar() +
+		 * Settings.getInstance().getNameServerIp() + Settings.getSplitChar() +
+		 * Settings.getInstance().getStorageServerIp()); if
+		 * (result.equals("OK")) return true; } catch (CommunicationException |
+		 * IOException e) { e.printStackTrace(); } return false;
+		 */
 
 	}
 
@@ -257,11 +253,18 @@ public class Communicator {
 			if (!answer.startsWith("OK"))
 				return false;
 
-			answer = answer.substring("OK ".length());
+			answer = answer
+					.substring(("OK" + Settings.getSplitChar()).length());
+
 			String[] downloadedFiles = answer.split(Settings.getListStopSign()
 					+ Settings.getListStartSign());
-			System.out.println("router answer " + answer);
-			mergeRouterDownload(downloadedFiles);
+
+			System.out.println("router answer_" + answer + "_END_ANSWER "
+					+ "length:" + downloadedFiles.length);
+			if (downloadedFiles.length - 1 > 0) {
+				mergeRouterDownload(downloadedFiles);
+			}
+
 			Main.state = State.LOCAL_STOP;
 			MainController.processStateChange();
 		} catch (CommunicationException | IOException e) {
