@@ -16,8 +16,8 @@ import nl.groep5.xchange.Settings;
 
 public class IncomingConnectionHandler extends Thread {
 
-	private static final String SEARCH_COMMAND = "SEARCH";
-	private static final String GET_COMMAND = "GET";
+	private static final String SEARCH_COMMAND = "SEARCH ";
+	private static final String GET_COMMAND = "GET ";
 	private Socket client;
 	private BufferedReader bufferedReader;
 	private PrintWriter printWriter;
@@ -129,7 +129,9 @@ public class IncomingConnectionHandler extends Thread {
 					public boolean accept(File file) {
 						if (pattern.equals("*")
 								|| (file.getName().toLowerCase()
-										.contains(pattern.toLowerCase()))) {
+										.contains(pattern.toLowerCase()))
+								|| file.getName().endsWith(
+										Settings.getTmpExtension())) {
 							return true;
 						}
 						return false;
