@@ -126,7 +126,10 @@ public class Communicator {
 			line = bufferedReader.readLine();
 		} while (line == null);
 
-		if (line.startsWith("FAIL"))
+		if (Settings.DEBUG) {
+			System.out.println("Respond from peer " + line);
+		}
+		if (line.equals("FAIL"))
 			throw new IOException();
 
 		System.out.println("Line :" + line);
@@ -212,15 +215,19 @@ public class Communicator {
 	}
 
 	public static boolean setRouterSettings() {
-		return true;
-		/*
-		 * try {//TODO activate if router works String result =
-		 * Router.getInstance().sendCommand( "SET" + Settings.getSplitChar() +
-		 * Settings.getInstance().getNameServerIp() + Settings.getSplitChar() +
-		 * Settings.getInstance().getStorageServerIp()); if
-		 * (result.equals("OK")) return true; } catch (CommunicationException |
-		 * IOException e) { e.printStackTrace(); } return false;
-		 */
+
+		try {// TODO activate if router works
+			String result = Router.getInstance().sendCommand(
+					"SET" + Settings.getSplitChar()
+							+ Settings.getInstance().getNameServerIp()
+							+ Settings.getSplitChar()
+							+ Settings.getInstance().getStorageServerIp());
+			if (result.equals("OK"))
+				return true;
+		} catch (CommunicationException | IOException e) {
+			e.printStackTrace();
+		}
+		return false;
 
 	}
 

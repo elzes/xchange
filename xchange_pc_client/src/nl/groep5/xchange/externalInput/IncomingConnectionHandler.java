@@ -16,9 +16,8 @@ import nl.groep5.xchange.Settings;
 
 public class IncomingConnectionHandler extends Thread {
 
-	private static final String SEARCH_COMMAND = "SEARCH"
-			+ Settings.getSplitChar();
-	private static final String GET_COMMAND = "GET" + Settings.getSplitChar();
+	private static final String SEARCH_COMMAND = "SEARCH";
+	private static final String GET_COMMAND = "GET";
 	private Socket client;
 	private BufferedReader bufferedReader;
 	private PrintWriter printWriter;

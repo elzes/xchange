@@ -84,7 +84,7 @@ public class StorageServer {
 		do {
 			line = in.readLine();
 		} while (line == null);
-
+		System.out.println("Received commando " + line);
 		if (line.equals("IS STORAGE SERVER")) {
 			out.println("OK");
 		}
