@@ -127,10 +127,9 @@ public class IncomingConnectionHandler extends Thread {
 
 					@Override
 					public boolean accept(File file) {
-						if (pattern.equals("*")
-								|| (file.getName().toLowerCase()
-										.contains(pattern.toLowerCase()))
-								|| file.getName().endsWith(
+						if ((pattern.equals("*") || (file.getName()
+								.toLowerCase().contains(pattern.toLowerCase())))
+								&& !file.getName().endsWith(
 										Settings.getTmpExtension())) {
 							return true;
 						}
