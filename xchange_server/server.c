@@ -25,7 +25,6 @@
 #define SERVER_PORT 7000
 #define NAME_SERVER_PORT 9001
 #define STORAGE_SERVER_PORT 9002
-#define PEER_PORT 9000
 #define BUFFSIZE 256
 #define ARRAY_LENGTH 33
 #define MAX_DOWNLOADS 8
@@ -48,7 +47,7 @@ int ss = 0, ns = 0, p = 0;
 struct start {
 	char *filename;
 	char *filesize;
-	char *blockcount;
+	char *blockcount;1
 	char *download_info;
 };
 struct start start_parameters[MAX_DOWNLOADS];
@@ -60,14 +59,15 @@ void listen_and_handle(int s);
 void handle(int* sPtr);
 void handle_name_server(int);
 void handle_storage_server(int);
-void close_socket(int);
 void function_start(void);
+void close_socket(int);
+
 
 int init_socket(void) {	 
 	int rv, s = socket(AF_INET, SOCK_STREAM, 0);
 	if(s < 0) {
 		perror("Error creating socket");
-		//exit(EXIT_FAILURE);
+		exit(EXIT_FAILURE);
 	}
 	gv_address.sin_family = AF_INET;
 	gv_address.sin_addr.s_addr = INADDR_ANY;

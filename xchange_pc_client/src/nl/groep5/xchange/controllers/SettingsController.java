@@ -14,7 +14,6 @@ import nl.groep5.xchange.Main;
 import nl.groep5.xchange.Settings;
 import nl.groep5.xchange.State;
 import nl.groep5.xchange.communication.Communicator;
-import nl.groep5.xchange.communication.Router;
 
 public class SettingsController extends AnchorPane implements Initializable {
 
@@ -47,7 +46,7 @@ public class SettingsController extends AnchorPane implements Initializable {
 		if (fieldsAreEmpty()) {
 			Main.showDialog("One or more fields are empty!");
 			return;
-		} 
+		}
 		Settings settings = Settings.getInstance();
 		String tempNameServerIP = settings.getNameServerIp();
 		String tempStorageServerIP = settings.getStorageServerIp();
@@ -63,7 +62,7 @@ public class SettingsController extends AnchorPane implements Initializable {
 				settings.setRouterIp(tempRouterIP);
 			} else {
 				settings.save();
-				Router.getInstance().resetSettings();
+				Communicator.resetConnections();
 				Communicator.setRouterSettings();
 				if (Main.state == null || Main.state == State.NO_SETTINGS) {
 					Main.state = State.LOCAL_STOP;
@@ -77,9 +76,9 @@ public class SettingsController extends AnchorPane implements Initializable {
 	}
 
 	private boolean fieldsAreEmpty() {
-		if (nameServerIP.getText().equals("") ||
-				storageServerIP.getText().equals("") ||
-				routerIP.getText().equals(""))
+		if (nameServerIP.getText().equals("")
+				|| storageServerIP.getText().equals("")
+				|| routerIP.getText().equals(""))
 			return true;
 		else
 			return false;

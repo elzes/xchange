@@ -36,8 +36,8 @@ public class Settings implements Serializable {
 
 	public static final boolean DEBUG = true;
 
-	private static final String SPLIT_CHAR = "|";
-	private static final String SPLIT_CHAR_REG_EX = "\\" + SPLIT_CHAR;
+	private static final String SPLIT_CHAR = " ";
+	private static final String SPLIT_CHAR_REG_EX = "" + "" + SPLIT_CHAR;
 
 	private static final String LIST_START_SIGN = "<";
 
