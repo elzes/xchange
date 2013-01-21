@@ -26,6 +26,11 @@ public class FileHelper {
 		return new File(location);
 	}
 
+	public static RandomAccessFile getRandomAccesFileFromFileReadOnly(File file)
+			throws FileNotFoundException {
+		return new RandomAccessFile(file, "r");
+	}
+
 	public static RandomAccessFile getRandomAccesFileFromFile(File file)
 			throws FileNotFoundException {
 		return new RandomAccessFile(file, "rw");
@@ -74,17 +79,14 @@ public class FileHelper {
 		writeByteArrayToFile(file, blockNr * blockSize, data, data.length);
 	}
 
-	public static byte[] getBlockFromFile(File file, int blockNr, int blockSize)
-			throws IOException {
+	public static byte[] getBlockFromFile(File file, int seekDistance,
+			int blockSize) throws IOException {
 		byte[] byteArray = new byte[blockSize];
-		int offset = blockNr * blockSize;
 
-		RandomAccessFile raf = getRandomAccesFileFromFile(file);
-		if (raf.length() < offset + blockSize)
-			throw new IOException("File is smaller than search");
-
-		raf.seek(blockNr * blockSize);
+		RandomAccessFile raf = getRandomAccesFileFromFileReadOnly(file);
+		raf.seek(seekDistance);
 		raf.read(byteArray);
+		System.out.println("readed:" + new String(byteArray));
 
 		return byteArray;
 	}

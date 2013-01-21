@@ -10,7 +10,6 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.RandomAccessFile;
 import java.net.Socket;
-import java.util.Arrays;
 
 import nl.groep5.xchange.Settings;
 
@@ -66,7 +65,7 @@ public class IncomingConnectionHandler extends Thread {
 			System.out.println("Search command");
 			handleSearch(line.substring(SEARCH_COMMAND.length()));
 		} else if (line.startsWith(GET_COMMAND)) {
-			System.out.println("Get command");
+			System.out.println("Get command command is: " + line);
 			handleGet(line.substring(GET_COMMAND.length()));
 		} else {
 			handleError();
@@ -95,9 +94,11 @@ public class IncomingConnectionHandler extends Thread {
 								+ Settings.getInfoExtension(), "r");
 				randomAccessFileStatus.seek(blockNr);
 				if (randomAccessFileStatus.readByte() == '0') {
+					randomAccessFileStatus.close();
 					handleError();
 					return;
 				}
+				randomAccessFileStatus.close();
 			} catch (IOException e) {
 				handleError();
 				return;
@@ -110,13 +111,16 @@ public class IncomingConnectionHandler extends Thread {
 			byte[] content = new byte[Settings.getBlockSize()];
 			randomAccessFile.read(content, 0, Settings.getBlockSize());
 			randomAccessFile.close();
-			System.out.println(Arrays.toString(content));
+			System.out.println("sending bytes: " + new String(content));
 			bufferedOutputStream.write(content);
 			bufferedOutputStream.flush();
+			
 			return;
 		} catch (FileNotFoundException e) {
+			handleError();
 			e.printStackTrace();
 		} catch (IOException e) {
+			handleError();
 			e.printStackTrace();
 		}
 	}
@@ -146,6 +150,9 @@ public class IncomingConnectionHandler extends Thread {
 	}
 
 	private void handleError() {
+		if (Settings.DEBUG) {
+			System.out.println("Returning fail");
+		}
 		printWriter.println("FAIL");
 	}
 }
