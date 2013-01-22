@@ -2,31 +2,50 @@ package nl.groep5.xchange.storageServer;
 
 public class StorageServerGetCommand extends StorageServerCommand {
 
-	private int blockNr;
+	private int seekDistance;
+	private int curBlockSize;
 
 	public StorageServerGetCommand(String line) throws InvalidCommandException {
 		super(line);
-		int blockNr;
+		int seekDistance;
 		try {
-			blockNr = Integer.parseInt(command[2]);
+			seekDistance = Integer.parseInt(command[2]);
 
 		} catch (NumberFormatException e) {
-			new InvalidCommandException("Invalid filesize");
+			new InvalidCommandException("Invalid seekdistance");
 			return;
 		}
-		setBlockNr(blockNr);
+		setSeekDistance(seekDistance);
+
+		int curBlockSize;
+		try {
+			curBlockSize = Integer.parseInt(command[3]);
+
+		} catch (NumberFormatException e) {
+			new InvalidCommandException("Invalid blocksize");
+			return;
+		}
+		setCurBlockSize(curBlockSize);
 	}
 
-	private void setBlockNr(int blockNr) {
-		this.blockNr = blockNr;
+	private void setCurBlockSize(int curBlockSize) {
+		this.curBlockSize = curBlockSize;
 	}
 
-	public int getBlockNr() {
-		return blockNr;
+	public int getCurBlockSize() {
+		return curBlockSize;
+	}
+
+	private void setSeekDistance(int seekDistance) {
+		this.seekDistance = seekDistance;
+	}
+
+	public int getSeekDistance() {
+		return seekDistance;
 	}
 
 	@Override
 	protected int getMinCommandLength() {
-		return 3;
+		return 4;
 	}
 }

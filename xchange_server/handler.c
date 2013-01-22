@@ -73,6 +73,10 @@ void handle(int *sPtr) {
 void handleCommand(char *command, int fd) {
 	int rv = 0;
 	printf("handleCommand: %s \n", command);
+<<<<<<< HEAD
+=======
+
+>>>>>>> 487299f274f30601ef9125df70525970815bb3c7
 	char *rest = "";
 	char *token = ""; 
 	char *ptr = command;
@@ -187,7 +191,12 @@ int sgetline(int fd, char **out)  {
     do {
         ret = read(fd, &buf, 1);
         if (ret < 1) {
+<<<<<<< HEAD
 			free(buffer);
+=======
+			printf("sgetline: ret <1 \n");
+            free(buffer);
+>>>>>>> 487299f274f30601ef9125df70525970815bb3c7
             return -1;
         }
 
@@ -237,6 +246,11 @@ void handle_storage_server(int fd) {
 		}
 
 		buffer[nr_bytes_recv]= '\0';
+<<<<<<< HEAD
+=======
+		printf("Storageserver: %s", buffer);
+
+>>>>>>> 487299f274f30601ef9125df70525970815bb3c7
 	}
 }
 
@@ -259,6 +273,10 @@ void handle_name_server(int fd) {
 		}
 
 		buffer[nr_bytes_recv]= '\0';
+<<<<<<< HEAD
+=======
+		printf("Nameserver: %s", buffer);
+>>>>>>> 487299f274f30601ef9125df70525970815bb3c7
 	}
 
 	int nr = 0;
@@ -295,8 +313,15 @@ int init_outgoing_socket(char *address, int port) {
 
 void function_start(void) {
 	if(ns == 0) {
+<<<<<<< HEAD
 		ns = init_outgoing_socket(nameServerIp, NAME_SERVER_PORT);
 		handle_name_server(ns);
+=======
+		printf("Trying to connect to nameserver: %s:%d\n", nameServerIp, NAME_SERVER_PORT);
+		ns = init_outgoing_socket(nameServerIp, NAME_SERVER_PORT);
+		handle_name_server(ns);
+		printf("Nameserver initialized.\n");
+>>>>>>> 487299f274f30601ef9125df70525970815bb3c7
 	}
 
 	// Connect to Peer for downloading
@@ -320,11 +345,19 @@ void function_start(void) {
 						
 						char infoChar = (char) start_parameters[curDownload].download_info[i];
 						info[i] = infoChar - 48;// set to first numeric ansii code
+<<<<<<< HEAD
+=======
+						printf("-> array[%d] = %d\n", i, info[i]);
+>>>>>>> 487299f274f30601ef9125df70525970815bb3c7
 						i++;
 					}
 
 					int blockNo = 0;
+<<<<<<< HEAD
 					while(blockNo < total) {
+=======
+					while(blockNo <= total) {
+>>>>>>> 487299f274f30601ef9125df70525970815bb3c7
 						printf("Going to download block %d status is %d\n", blockNo, info[blockNo]);
 						if(info[blockNo] == 1) {
 							blockNo++;
@@ -343,6 +376,7 @@ void function_start(void) {
 						
 						nr_bytes_recv = 0;
 						while(nr_bytes_recv < BLOCK_SIZE) {
+<<<<<<< HEAD
 							received_bytes = recv(peer, received + nr_bytes_recv, BLOCK_SIZE - nr_bytes_recv, 0);
 						
 							if(received_bytes < 0) {
@@ -350,10 +384,26 @@ void function_start(void) {
 							}
 							nr_bytes_recv += received_bytes;
 							printf("%s\n", received);
+=======
+							printf("Before receiving: %d\n", nr_bytes_recv);
+							received_bytes = recv(peer, received + nr_bytes_recv, BLOCK_SIZE - nr_bytes_recv, 0);
+						
+							if(received_bytes < 0) {
+								printf("Break\n");
+								break;
+							}
+							nr_bytes_recv += received_bytes;
+							printf("After receiving: -> %d\n", nr_bytes_recv);
+							printf("Received %s\n", received);
+>>>>>>> 487299f274f30601ef9125df70525970815bb3c7
 						}
 						
 						char *file = malloc(BLOCK_SIZE + 50);
 						sprintf(file, "POST %s %s %d %d\n", start_parameters[curDownload].filename, start_parameters[curDownload].filesize, blockNo * BLOCK_SIZE, nr_bytes_recv);
+<<<<<<< HEAD
+=======
+						printf("Send to storageserver...\n");
+>>>>>>> 487299f274f30601ef9125df70525970815bb3c7
 						
 						ss = init_outgoing_socket(storageServerIp, STORAGE_SERVER_PORT);
 						
@@ -367,8 +417,14 @@ void function_start(void) {
 						if(firstResponse < 0) {
 							perror("Error receiving");
 						}
+<<<<<<< HEAD
 						printf("sending to storageserver: %d bytes\n", nr_bytes_recv);
 						printf("%s\n", received);
+=======
+						printf("Received from storageserver before byte send: %s\n", reply);
+						printf("sending to storageserver: %d bytes\n", nr_bytes_recv);
+						printf("bytes are %s\n", received);
+>>>>>>> 487299f274f30601ef9125df70525970815bb3c7
 						rv = send(ss, received, nr_bytes_recv, 0);
 						if (rv < 0) {
 							perror("Error sending");
@@ -378,7 +434,11 @@ void function_start(void) {
 						if(secondResponse < 0) {
 							perror("Error receiving");
 						}
+<<<<<<< HEAD
 						printf("Received from storageserver: %s\n", reply);
+=======
+						printf("Received from storageserver: after bytes send %s\n", reply);
+>>>>>>> 487299f274f30601ef9125df70525970815bb3c7
 						free(reply);
 						free(received);
 						free(file);
@@ -388,6 +448,7 @@ void function_start(void) {
 						
 						char *infoText = malloc(sizeof(info));//TODO fix x in front of string?
 						int blockLooper;
+<<<<<<< HEAD
 						for(blockLooper = 0; blockLooper < (sizeof(info) / sizeof(int)); blockLooper++)
 						{
 							int blockStatus = info[blockLooper];
@@ -398,20 +459,40 @@ void function_start(void) {
    						}
 						start_parameters[curDownload].download_info = infoText;
 						printf("New download_info = %s\n", infoText);
+=======
+						printf("New infoString = %s\n", infoText);
+						for(blockLooper = 0; blockLooper < (sizeof(info) / sizeof(int)); blockLooper++)
+						{
+							int blockStatus = info[blockLooper];
+							printf("putting %d status: %d", blockLooper, blockStatus);
+							sprintf(infoText, "%s%d", infoText, blockStatus);
+							printf("New infoString = %s\n", infoText);
+						}
+						start_parameters[curDownload].download_info = infoText;
+						printf("New infoString = %s\n", infoText);
+>>>>>>> 487299f274f30601ef9125df70525970815bb3c7
 						printf("Block %d downloaded\n", blockNo);
 						blockNo++;
 					}
 				}
 			}
+<<<<<<< HEAD
 			printf("Download file %s : finished\n", start_parameters[curDownload].filename);//TODO deze melding zie je niet
 		}
 	}
 	printf("Download finished.\n\n");
+=======
+			printf("Download file %s finished", start_parameters[curDownload].filename);//TODO deze melding zie je niet
+		}
+	}
+	printf("Download finished.");
+>>>>>>> 487299f274f30601ef9125df70525970815bb3c7
 }
 
 void stopDownload(int fd) {
 	printf("--> Stop Router Download...\n");
 	int rv = pthread_cancel(downloadThread);
+<<<<<<< HEAD
 	if (rv != 0 && rv != 3) {
 		printf("rv not 0  but %d\n", rv);
 		fprintf(stderr, "Cannot cancel thread %s\n", strerror(rv));
@@ -420,6 +501,19 @@ void stopDownload(int fd) {
 		strcpy(messagebuffer, OK_RESPONSE_WITHOUT_LINE_END);
 		int i;
 		for(i = 0; i < MAX_DOWNLOADS; i++) {
+=======
+	if (rv != 3) {//TODO change to 0 its chrashing waarschijnlijk omdat hij al klaar is?
+		printf("rv not 0  but %d\n", rv);
+		fprintf(stderr, "Cannot cancel thread %s\n", strerror(rv));
+	} else {
+		printf("Stopping threads succes\n");
+		char* messagebuffer = malloc(BUFFSIZE);
+		strcpy(messagebuffer, OK_RESPONSE_WITHOUT_LINE_END);
+		printf("added %s response tot messagebuffer\n", OK_RESPONSE_WITHOUT_LINE_END);
+		int i;
+		for(i = 0; i < MAX_DOWNLOADS; i++) {
+			printf("Going to gather return info for %d\n", i);
+>>>>>>> 487299f274f30601ef9125df70525970815bb3c7
 			if(start_parameters[i].filename == NULL) {
 				break;
 			} else {
@@ -431,10 +525,18 @@ void stopDownload(int fd) {
 				strcat(messagebuffer, start_parameters[i].blockcount);
 				strcat(messagebuffer, SPLIT_CHAR);
 				strcat(messagebuffer, start_parameters[i].download_info);
+<<<<<<< HEAD
 			}
 		}
 		strcat(messagebuffer, "\n");
 		printf("%s\n", messagebuffer);
+=======
+				printf("Download %d processed\n", i);
+			}
+		}
+		strcat(messagebuffer, "\n");
+		printf("Sending stop return %s\n", messagebuffer);
+>>>>>>> 487299f274f30601ef9125df70525970815bb3c7
 		rv = write(fd, messagebuffer, BUFFSIZE);
 	}
 

@@ -114,11 +114,14 @@ public class MainController extends AnchorPane implements Initializable {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
+		System.out.println("STATE CHANGE PROCESS REQUEST");
 		if (settings == null || shareFile == null || startPC == null
 				|| stopPC == null || startRouter == null || stopRouter == null)
 			return;
 
+		System.out
+				.println("STATE CHANGE PROCESS REQUEST_ GOING TO PROCESS STATE "
+						+ Main.state.toString());
 		switch (Main.state) {
 		case NO_SETTINGS:
 			settings.setDisable(false);
@@ -149,6 +152,7 @@ public class MainController extends AnchorPane implements Initializable {
 			Settings.getInstance().setState(Main.state);
 			break;
 		case LOCAL_STOP:
+			System.out.println("ACTIVATING LOCAL_STOP");
 			settings.setDisable(false);
 			shareFile.setDisable(false);
 			startPC.setDisable(false);
@@ -157,6 +161,7 @@ public class MainController extends AnchorPane implements Initializable {
 			stopRouter.setDisable(true);
 			DownloadController.stopDownloads();
 			Settings.getInstance().setState(Main.state);
+			System.out.println("DONE ACTIVATING LOCAL_STOP");
 			break;
 		case ROUTER_START:
 			if (Communicator.startRouterDownload()) {
@@ -175,9 +180,9 @@ public class MainController extends AnchorPane implements Initializable {
 			if (Communicator.stopRouterDownload()) {
 				settings.setDisable(false);
 				shareFile.setDisable(false);
-				startPC.setDisable(true);
+				startPC.setDisable(false);
 				stopPC.setDisable(true);
-				startRouter.setDisable(true);
+				startRouter.setDisable(false);
 				stopRouter.setDisable(true);
 				Settings.getInstance().setState(Main.state);
 			} else {

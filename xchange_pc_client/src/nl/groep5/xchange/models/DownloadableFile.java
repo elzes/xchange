@@ -187,27 +187,43 @@ public class DownloadableFile {
 			String stringContent = new String(content);
 			commandArgs.add(stringContent);
 
-			if (getPeer() == null) {
-				commandArgs.add(Settings.getListStartSign()
-						+ Settings.getListStopSign());
-			} else {
-				commandArgs.add(Settings.getListStartSign() + getPeer().getIp()
-						+ Settings.getListStopSign());
-			}
-
-			String command = Settings.getListStartSign();
+			String command = "";// Settings.getListStartSign();
 			for (String s : commandArgs) {
 				command += s + Settings.getSplitChar();
 			}
 			command = command.substring(0, command.length() - 1);// strip last
 																	// split
 																	// char
-			command += Settings.getListStopSign();
+			command += "";// Settings.getListStopSign();
 
 			return command;
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		return "";
+	}
+
+	public void completeDownload() throws FileNotFoundException, IOException {
+		if (Settings.DEBUG) {
+			System.out.println("complete download of " + getRealFileName());
+		}
+		getDownloadStatusFile().delete();
+
+		File newFileName = new File(Settings.getSharedFolder()
+				+ getRealFileName());
+
+		// delete if new file already exists
+		if (newFileName.exists()) {
+			if (Settings.DEBUG) {
+				System.out
+						.println("Going to delete downloaded file because target already exsists");
+			}
+			getDownloadTargetFile().delete();
+		}
+
+		getDownloadTargetFile().renameTo(newFileName);
+
+		DownloadController.removeDownload(this);
+
 	}
 }

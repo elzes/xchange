@@ -36,12 +36,8 @@ public class Settings implements Serializable {
 
 	public static final boolean DEBUG = true;
 
-	private static final String SPLIT_CHAR = "|";
-	private static final String SPLIT_CHAR_REG_EX = "\\" + SPLIT_CHAR;
-
-	private static final String LIST_START_SIGN = "<";
-
-	private static final String LIST_STOP_SIGN = ">";
+	private static final String SPLIT_CHAR = " ";
+	private static final String SPLIT_CHAR_REG_EX = "" + SPLIT_CHAR;
 
 	public String getNameServerIp() {
 		return nameServerIP;
@@ -124,10 +120,12 @@ public class Settings implements Serializable {
 	}
 
 	public void load() throws IOException, ClassNotFoundException {
+
 		FileInputStream fileIn = new FileInputStream(
 				Settings.getSettingFileLocation());
 		ObjectInputStream in = new ObjectInputStream(fileIn);
 		instance = (Settings) in.readObject();
+
 		in.close();
 		fileIn.close();
 	}
@@ -157,14 +155,6 @@ public class Settings implements Serializable {
 
 	public static String getSplitCharRegEx() {
 		return SPLIT_CHAR_REG_EX;
-	}
-
-	public static String getListStartSign() {
-		return LIST_START_SIGN;
-	}
-
-	public static String getListStopSign() {
-		return LIST_STOP_SIGN;
 	}
 
 	public void setState(State state) {

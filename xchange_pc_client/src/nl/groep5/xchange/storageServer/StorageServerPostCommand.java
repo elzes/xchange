@@ -1,11 +1,19 @@
 package nl.groep5.xchange.storageServer;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.PrintWriter;
+
+import org.apache.commons.io.IOUtils;
+
 public class StorageServerPostCommand extends StorageServerCommand {
-	private int blockNr;
+	private int seekDistance;
 	private int fileSize;
 	private byte[] bytes;
+	private int blockSize;
 
-	public StorageServerPostCommand(String line) throws InvalidCommandException {
+	public StorageServerPostCommand(String line, InputStream dis,
+			PrintWriter printWriter) throws InvalidCommandException {
 		super(line);
 
 		int fileSize;
@@ -18,22 +26,47 @@ public class StorageServerPostCommand extends StorageServerCommand {
 		}
 		setFileSize(fileSize);
 
-		int blockNr;
+		int seekDistance;
 		try {
-			blockNr = Integer.parseInt(command[3]);
+			seekDistance = Integer.parseInt(command[3]);
+		} catch (NumberFormatException e) {
+			new InvalidCommandException("Invalid seekdistance");
+			return;
+		}
+		setSeekDistance(seekDistance);
+
+		int blockSize;
+		try {
+			blockSize = Integer.parseInt(command[4]);
 		} catch (NumberFormatException e) {
 			new InvalidCommandException("Invalid blocknr");
 			return;
 		}
+		setBlockSize(blockSize);
+		printWriter.println("OK");
 
-		setBlockNr(blockNr);
+		byte[] bytes = new byte[getBlockSize()];
+		System.out.println("GOing to read " + getBlockSize() + " bytes");
 
-		String bytesToWrite = command[4];
-		setBitesToWrite(bytesToWrite.getBytes());
+		try {
+			IOUtils.readFully(dis, bytes, 0, blockSize);
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
+		System.out.println("Bytes received:"+new String(bytes));
+		setBitesToWrite(bytes);
 	}
 
-	private void setBlockNr(int blockNr) {
-		this.blockNr = blockNr;
+	private void setBlockSize(int blockSize) {
+		this.blockSize = blockSize;
+	}
+
+	public int getBlockSize() {
+		return blockSize;
+	}
+
+	private void setSeekDistance(int seekDistance) {
+		this.seekDistance = seekDistance;
 	}
 
 	private void setFileSize(int fileSize) {
@@ -44,8 +77,8 @@ public class StorageServerPostCommand extends StorageServerCommand {
 		return fileSize;
 	}
 
-	public int getBlockNr() {
-		return blockNr;
+	public int getSeekDistance() {
+		return seekDistance;
 	}
 
 	private void setBitesToWrite(byte[] bytes) {

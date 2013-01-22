@@ -5,8 +5,6 @@ import java.io.FilenameFilter;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Control;
@@ -15,6 +13,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.text.Text;
+import nl.groep5.xchange.DownloadList;
 import nl.groep5.xchange.Downloader;
 import nl.groep5.xchange.Main;
 import nl.groep5.xchange.Settings;
@@ -34,8 +33,7 @@ public class DownloadController extends Control implements Initializable {
 	@FXML
 	TableColumn<DownloadableFile, ProgressBar> progress;
 
-	public static ObservableList<DownloadableFile> pendingDownloads = FXCollections
-			.observableArrayList();
+	public static DownloadList pendingDownloads = new DownloadList();
 
 	public static void addDownload(DownloadableFile downloadableFile) {
 		if (Settings.DEBUG) {

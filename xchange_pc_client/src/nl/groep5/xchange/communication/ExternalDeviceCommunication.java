@@ -18,26 +18,30 @@ public class ExternalDeviceCommunication {
 	protected static final int SOCKET_TIMEOUT = 5;
 	protected String ip;
 	protected int port;
+	public Socket socket;
+	public BufferedReader bufferedReader;
+	public PrintWriter printWriter;
 
 	public ExternalDeviceCommunication(String ip, int port) {
 		this.ip = ip;
 		this.port = port;
 	}
 
-	public String sendCommand(String command) throws UnknownHostException,
-			IOException, ConnectException, CommunicationException {
+	public String sendCommand(String command, boolean keepAlive)
+			throws UnknownHostException, IOException, ConnectException,
+			CommunicationException {
 
 		if (ip == null)
 			throw new CommunicationException("Ip is null");
 
 		try {
-			Socket socket = new Socket();
+			socket = new Socket();
 			socket.connect(new InetSocketAddress(ip, port),
 					SOCKET_TIMEOUT * 1000);
-			BufferedReader bufferedReader = new BufferedReader(
-					new InputStreamReader(socket.getInputStream()));
+			bufferedReader = new BufferedReader(new InputStreamReader(
+					socket.getInputStream()));
 
-			PrintWriter printWriter = new PrintWriter(socket.getOutputStream(),
+			printWriter = new PrintWriter(socket.getOutputStream(),
 					true);
 			if (Settings.DEBUG) {
 				System.out.println("Going to write to "
@@ -50,10 +54,11 @@ public class ExternalDeviceCommunication {
 				line = bufferedReader.readLine();
 			} while (line == null);
 
-			printWriter.close();
-			bufferedReader.close();
-			socket.close();
-
+			if (!keepAlive) {
+				printWriter.close();
+				bufferedReader.close();
+				socket.close();
+			}
 			if (Settings.DEBUG) {
 				System.out.println("Response from " + this.getClass().getName()
 						+ " " + line);

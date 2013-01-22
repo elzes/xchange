@@ -1,12 +1,11 @@
 package nl.groep5.xchange;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.net.ConnectException;
 import java.util.ArrayList;
 
 import nl.groep5.xchange.communication.Communicator;
-import nl.groep5.xchange.controllers.DownloadController;
 import nl.groep5.xchange.models.DownloadableFile;
 
 public class Downloader extends Thread {
@@ -41,8 +40,13 @@ public class Downloader extends Thread {
 				completeDownload();
 				return;
 			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 
-			int blockSize;
+		int blockSize;
+
+		try {
 			while (!downloadIsComplete() && running) {
 
 				if (curBlock < downloadableFile.getNoOfBlocks() - 1) {
@@ -50,36 +54,50 @@ public class Downloader extends Thread {
 				} else {
 					blockSize = downloadableFile.getRestSize();
 				}
-				while(downloadableFile.getPeer() == null) {
+				while (downloadableFile.getPeer() == null) {
 					Communicator.searchPeerForBlock(downloadableFile, curBlock,
 							blockSize);
 				}
-				byte[] result = Communicator.GetBlockFromPeer(downloadableFile,
-						curBlock, blockSize);
-				if (result == null) {
-					excludeList.add(curBlock);
+				byte[] result;
+				try {
+					result = Communicator.GetBlockFromPeer(downloadableFile,
+							curBlock, blockSize);
+					if (result == null) {
+						excludeList.add(curBlock);
+						continue;
+					}
+
+					targetFile.seek(Settings.getBlockSize() * curBlock);
+					targetFile.write(result);
+
+					progressFile.seek(curBlock);
+					progressFile.write((byte) '1');
+					downloadableFile.updateProgressBar();
+				} catch (ConnectException e) {
+					e.printStackTrace();
+					downloadableFile.setPeer(null);// reset peer
+				} catch (IOException e) {
+					e.printStackTrace();
 					continue;
 				}
-
-				targetFile.seek(Settings.getBlockSize() * curBlock);
-				targetFile.write(result);
-
-				progressFile.seek(curBlock);
-				progressFile.write((byte) '1');
-				downloadableFile.updateProgressBar();
 			}
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
 
+		try {
 			if (downloadIsComplete()) {
 				completeDownload();
 			} else {
 				progressFile.close();
 				targetFile.close();
 			}
-
-			return;
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+
+		return;
+
 	}
 
 	private boolean downloadIsComplete() throws IOException {
@@ -114,26 +132,6 @@ public class Downloader extends Thread {
 		progressFile.close();
 		targetFile.close();
 
-		if (Settings.DEBUG) {
-			System.out.println("complete download of "
-					+ downloadableFile.getRealFileName());
-		}
-		downloadableFile.getDownloadStatusFile().delete();
-
-		File newFileName = new File(Settings.getSharedFolder()
-				+ downloadableFile.getRealFileName());
-
-		// delete if new file already exists
-		if (newFileName.exists()) {
-			if (Settings.DEBUG) {
-				System.out
-						.println("Going to delete downloaded file because target already exsists");
-			}
-			downloadableFile.getDownloadTargetFile().delete();
-		}
-
-		downloadableFile.getDownloadTargetFile().renameTo(newFileName);
-
-		DownloadController.removeDownload(downloadableFile);
+		downloadableFile.completeDownload();
 	}
 }
