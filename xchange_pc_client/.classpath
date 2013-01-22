@@ -7,9 +7,9 @@
 			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="C:/Program Files/Java/jdk1.7.0_09/jre/lib/jfxrt.jar"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="/usr/lib/jvm/jdk1.7.0/jre/lib/jfxrt.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
-	<classpathentry kind="lib" path="/home/elzes/Downloads/commons-io-2.4/commons-io-2.4.jar" sourcepath="/home/elzes/Downloads/commons-io-2.4/commons-io-2.4-sources.jar"/>
-	<classpathentry kind="lib" path="/home/elzes/Downloads/commons-io-2.4/commons-io-2.4-javadoc.jar"/>
+	<classpathentry kind="lib" path="libs/commons-io-2.4-javadoc.jar"/>
+	<classpathentry kind="lib" path="libs/commons-io-2.4.jar"/>
+	<classpathentry kind="lib" path="libs/jfxrt.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
