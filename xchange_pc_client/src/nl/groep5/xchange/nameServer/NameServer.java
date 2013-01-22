@@ -34,6 +34,7 @@ public class NameServer {
 	 */
 
 	public void listenAndHandle() throws Exception {
+		@SuppressWarnings("resource")
 		ServerSocket ss = new ServerSocket(port);
 
 		// listen for incoming connections
@@ -87,16 +88,19 @@ public class NameServer {
 			System.out.println("Handle list");
 		}
 
+		String sList = "";
 		synchronized (list) {
 			for (String ip : list) {
-				if (ip.equals(ownIp))
-					continue;
-				out.print(ip + " ");
+				/*TODO if (ip.equals(ownIp))
+					continue;*/
+				sList += ip + " ";
 			}
 		}
 
-		// send EOL
-		out.println("");
+		if (sList.length() > 0) {
+			sList = sList.substring(0, sList.length() - 1);
+		}
+		out.println(sList);
 	}
 
 	public void handleError(PrintWriter out) throws Exception {
