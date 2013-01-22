@@ -159,7 +159,7 @@ public class Communicator {
 						});
 				// skip file if local exists
 				if (foundFiles.length > 0) {
-					// TODO continue;
+					continue;
 				}
 
 				final DownloadableFile downloadableFile = new DownloadableFile(
@@ -198,8 +198,6 @@ public class Communicator {
 		Socket socket = new Socket(downloadableFile.getPeer().getIp(),
 				downloadableFile.getPeer().getPort());
 
-		BufferedInputStream bufferedInputStream = new BufferedInputStream(
-				socket.getInputStream(), Settings.getBlockSize());
 		PrintWriter printWriter = new PrintWriter(socket.getOutputStream(),
 				true);
 
@@ -207,11 +205,7 @@ public class Communicator {
 				+ Settings.getSplitChar() + curBlock);
 
 		byte[] byteArray = new byte[size];
-
-		int n = -1;
-		while (n < 1) {
-			n = bufferedInputStream.read(byteArray, 0, size);
-		}
+		IOUtils.readFully(socket.getInputStream(), byteArray);
 
 		String response = new String(byteArray);
 		if (response.startsWith("FAIL")) {
@@ -309,7 +303,7 @@ public class Communicator {
 			e.printStackTrace();
 		}
 
-		return true;//when it fails we will discard the router his download//TODO change this
+		return true;
 	}
 
 	private static void mergeRouterDownload(String[] downloadedFiles) {
@@ -332,8 +326,11 @@ public class Communicator {
 
 			System.out.println("remote status: "
 					+ Arrays.toString(remoteStatus));
-			DownloadableFile downloadableFile = new DownloadableFile(args[0],
-					args[1], null);
+
+			DownloadableFile downloadableFile = DownloadController.pendingDownloads
+					.get(DownloadController.pendingDownloads
+							.indexOf(new DownloadableFile(args[0], args[1],
+									null)));
 			try {
 				RandomAccessFile downloadStatusFile = new RandomAccessFile(
 						downloadableFile.getDownloadStatusFile(), "r");
@@ -341,7 +338,8 @@ public class Communicator {
 						.length()];
 				downloadStatusFile.readFully(localStatusTmp, 0,
 						localStatusTmp.length);
-				// remove new line characters
+				downloadStatusFile.close();
+
 				String localStatusTmp2 = new String(localStatusTmp).replace(
 						"\n", "").replace("\r", "");
 				System.out.println("local status: " + localStatusTmp2);
@@ -357,8 +355,11 @@ public class Communicator {
 						+ remoteDownloadedBlocks.size());
 				mergeRemoteDownloadedBlocks(downloadableFile,
 						remoteDownloadedBlocks);
+				downloadableFile.getProgressBar();
+				if (downloadableFile.getProgress() == 1) {
+					downloadableFile.completeDownload();
+				}
 
-				downloadStatusFile.close();
 			} catch (IOException e) {
 				e.printStackTrace();
 			} catch (Exception e) {
@@ -377,9 +378,8 @@ public class Communicator {
 		try {
 			RandomAccessFile statusFile = new RandomAccessFile(
 					downloadableFile.getDownloadStatusFile(), "rw");
-			File test = new File(downloadableFile.getDownloadTargetFile()
-					.getPath() + ".fromFileServer.png");
-			RandomAccessFile targetFile = new RandomAccessFile(test, "rw");
+			RandomAccessFile targetFile = new RandomAccessFile(
+					downloadableFile.getDownloadTargetFile(), "rw");
 			targetFile.setLength(downloadableFile.getFileSize());
 
 			if (statusFile == null || targetFile == null) {

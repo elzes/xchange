@@ -25,7 +25,6 @@ public class TestServer {
 			socket.close();
 			System.out.println("done");
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 

@@ -1,13 +1,11 @@
 package nl.groep5.xchange;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.net.ConnectException;
 import java.util.ArrayList;
 
 import nl.groep5.xchange.communication.Communicator;
-import nl.groep5.xchange.controllers.DownloadController;
 import nl.groep5.xchange.models.DownloadableFile;
 
 public class Downloader extends Thread {
@@ -134,26 +132,6 @@ public class Downloader extends Thread {
 		progressFile.close();
 		targetFile.close();
 
-		if (Settings.DEBUG) {
-			System.out.println("complete download of "
-					+ downloadableFile.getRealFileName());
-		}
-		downloadableFile.getDownloadStatusFile().delete();
-
-		File newFileName = new File(Settings.getSharedFolder()
-				+ downloadableFile.getRealFileName());
-
-		// delete if new file already exists
-		if (newFileName.exists()) {
-			if (Settings.DEBUG) {
-				System.out
-						.println("Going to delete downloaded file because target already exsists");
-			}
-			downloadableFile.getDownloadTargetFile().delete();
-		}
-
-		downloadableFile.getDownloadTargetFile().renameTo(newFileName);
-
-		DownloadController.removeDownload(downloadableFile);
+		downloadableFile.completeDownload();
 	}
 }

@@ -202,4 +202,28 @@ public class DownloadableFile {
 		}
 		return "";
 	}
+
+	public void completeDownload() throws FileNotFoundException, IOException {
+		if (Settings.DEBUG) {
+			System.out.println("complete download of " + getRealFileName());
+		}
+		getDownloadStatusFile().delete();
+
+		File newFileName = new File(Settings.getSharedFolder()
+				+ getRealFileName());
+
+		// delete if new file already exists
+		if (newFileName.exists()) {
+			if (Settings.DEBUG) {
+				System.out
+						.println("Going to delete downloaded file because target already exsists");
+			}
+			getDownloadTargetFile().delete();
+		}
+
+		getDownloadTargetFile().renameTo(newFileName);
+
+		DownloadController.removeDownload(this);
+
+	}
 }

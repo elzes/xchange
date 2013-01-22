@@ -54,13 +54,7 @@ public class StorageServerPostCommand extends StorageServerCommand {
 			e1.printStackTrace();
 		}
 		System.out.println("Bytes received:"+new String(bytes));
-		/*
-		 * try { int bytesRead = dis.read(bytes);
-		 * System.out.println("Bytes received " + bytesRead);
-		 * 
-		 * } catch (IOException e) { // TODO Auto-generated catch block
-		 * e.printStackTrace(); }
-		 */setBitesToWrite(bytes);
+		setBitesToWrite(bytes);
 	}
 
 	private void setBlockSize(int blockSize) {

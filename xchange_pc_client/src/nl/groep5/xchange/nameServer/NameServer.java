@@ -91,8 +91,8 @@ public class NameServer {
 		String sList = "";
 		synchronized (list) {
 			for (String ip : list) {
-				/*TODO if (ip.equals(ownIp))
-					continue;*/
+				if (ip.equals(ownIp))
+					continue;
 				sList += ip + " ";
 			}
 		}
